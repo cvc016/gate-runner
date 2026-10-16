@@ -18,7 +18,7 @@ function apply(s,meta){ meta=meta||{}; const g=k=>meta[k]||0;
 function power(meta){ const F=V().fx, g=k=>meta[k]||0, cr=Math.min(0.6,0.05+F.crit*g('crit')); return {dps:(1+F.atk*g('atk'))*(1+F.rate*g('rate'))*(1+cr)/1.05, boss:1+F.boss*g('boss')}; }
 // v0.7.1 升級掛鉤：第 6 關起，怪物 HP 跟著「建議配點的輸出倍率」成長（相對第 5 關），不升級的玩家會被血量拉開
 const gateCache={};
-function gate(L){ if(gateCache[L]) return gateCache[L]; let r={z:1,b:1}; if(L>5){ const p=power(recommended(L)), p5=power(recommended(5)), e=V().gateExp; const X=1+(V().gateX-1)*Math.min(1,(L-5)/5); r={z:Math.max(1,Math.pow(p.dps/p5.dps,e))*X, b:Math.max(1,Math.pow(p.boss/p5.boss,e))}; } /* v0.7.1 第 2 輪：指數 1.3＋第 6–10 關漸增到 ×1.4 */ if(info(L).s===5) r={z:r.z,b:1+(r.b-1)*V().restPos5}; gateCache[L]=r; return r; }
+function gate(L){ if(gateCache[L]) return gateCache[L]; let r={z:1,b:1}; if(L>5){ const p=power(recommended(L)), p5=power(recommended(5)), e=V().gateExp; const X=1+(V().gateX-1)*Math.min(1,(L-5)/5); r={z:Math.max(1,Math.pow(p.dps/p5.dps,e))*X, b:Math.max(1,Math.pow(p.boss/p5.boss,e))}; } /* v0.7.2：指數 gateExp＋第 6–10 關漸增到 ×gateX（壓平建議配點曲線） */ if(info(L).s===5) r={z:r.z,b:1+(r.b-1)*V().restPos5}; gateCache[L]=r; return r; }
 // ---- 金幣（§2）----
 function info(L){ const c=CONFIG.cycleLength; return {tier:Math.floor((L-1)/c), s:((L-1)%c)+1}; }
 function coins(kind,L){ const c=V().coin, f=a=>Math.pow(L,a);

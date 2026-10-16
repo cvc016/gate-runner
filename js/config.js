@@ -133,7 +133,7 @@ const CONFIG = {
     zombieHpMul: 1.3, bossHpMul: 1.4, bossHpMulEarly: [1.2,1.2,1.2],
     firstHordeAdd: 10, lastHordeMin: 50, lastWaveDur: 12, lastWaveHpEarly: [0.6,0.7,0.8],
     mulGate: { value: 2, capEarly: 2, capHard: 1, capEarlyAfter100: 3 }, plusGate: [8, 30],
-    fx:{ atk:0.12, rate:0.08, armor:0.975, start:4, gate:0.08, boss:0.10, crit:0.03 }, gateExp:1.3, gateX:1.4, // v0.7.1：升級效果加倍＋HP 掛鉤建議配點輸出（QA：v0.7.0 建議配點全勝、不升級 L50 仍 50%）
+    fx:{ atk:0.12, rate:0.08, armor:0.975, start:4, gate:0.08, boss:0.10, crit:0.03 }, gateExp:0.7, gateX:2.2, // v0.7.1：升級效果加倍＋HP 掛鉤建議配點輸出（QA：v0.7.0 建議配點全勝、不升級 L50 仍 50%）
     stoneGate: { from:11, tapsA:3, tapsStep:20, tapsMax:10, hardFrom:151, hardChance:0.15, hardExtra:3,
       hitExpand:1.4, hitMinPx:88, tapMaxMs:280, tapSlopPx:14, tapMinGapMs:60, tapRange:[8,40],
       penalty:{ lossFrac:0.12, lossFlat:3, stunSec:0.6, halfIfTapped:0.5, hardLossFrac:0.15, hardStun:0.8 },
