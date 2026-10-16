@@ -50,7 +50,7 @@ const ABILITIES=[
  WP('fireball','火球術','R','發射火球，爆炸並燃燒周圍敵人'),
  WP('iceShard','冰錐','R','扇形冰錐，凍結敵人使其減速'),
  WP('chainLightning','連鎖閃電','R','閃電在敵人之間跳躍'),
- WP('arcaneOrb','魔法飛彈','R','追蹤敵人的奧術光球'),
+ WP('arcaneOrb','魔法飛彈','R','追蹤敵人的魔法光球'),
  WP('poisonCloud','毒霧','R','在敵群中留下持續毒雲'),
  WP('laser','雷射光束','E','貫穿整條跑道的光束'),
  WP('meteorW','隕石術','E','從天而降的隕石，大範圍爆炸'),
@@ -65,7 +65,7 @@ const ABILITIES=[
  A('burn','灼燒','C','火系武器傷害 +20%',s=>s.wElem.fire+=0.2),
  A('frostbite','凍傷','C','敵人移動 -15%（冰系 +20%）',s=>{s.slowZ=Math.min(0.6,s.slowZ+0.15);s.wElem.ice+=0.2;}),
  A('conductor','導體','R','閃電多跳 1 次、雷系 +20%',s=>{s.chain+=1;s.wElem.thunder+=0.2;},3),
- A('arcaneFocus','奧術專注','C','奧術武器傷害 +25%',s=>s.wElem.arcane+=0.25),
+ A('arcaneFocus','魔法專注','C','魔法武器傷害 +25%',s=>s.wElem.arcane+=0.25),
  A('toxin','劇毒','C','範圍 +15%、自然系 +20%',s=>{s.area+=0.15;s.wElem.nature+=0.2;}),
  A('lens','聚焦鏡','R','雷射傷害 +40%',s=>s.wMul.laser=(s.wMul.laser||1)+0.4,3),
  A('gravity','重力井','R','黑洞/震波範圍 +30%',s=>{s.area+=0.1;s.wMul.blackHoleW=(s.wMul.blackHoleW||1)+0.3;s.wMul.shockwave=(s.wMul.shockwave||1)+0.3;},3),
@@ -108,7 +108,7 @@ const SYNERGIES=[
  S('firestorm','火焰龍捲',['fireball','tornado'],'火球與龍捲風傷害 x1.5',s=>{wm(s,'fireball',1.5);wm(s,'tornado',1.5);}),
  S('shatter','碎冰',['iceShard','shockwave'],'震波粉碎冰凍敵人：兩者 x1.5',s=>{wm(s,'iceShard',1.5);wm(s,'shockwave',1.5);}),
  S('superconduct','超導',['chainLightning','iceShard'],'閃電 +2 跳、冰錐 x1.3',s=>{s.chain+=2;wm(s,'iceShard',1.3);}),
- S('arcaneStorm','奧術風暴',['arcaneOrb','chainLightning'],'魔法飛彈附帶閃電 x1.5',s=>{wm(s,'arcaneOrb',1.5);wm(s,'chainLightning',1.2);}),
+ S('arcaneStorm','魔法風暴',['arcaneOrb','chainLightning'],'魔法飛彈附帶閃電 x1.5',s=>{wm(s,'arcaneOrb',1.5);wm(s,'chainLightning',1.2);}),
  S('plague','瘟疫',['poisonCloud','vamp'],'毒霧 x1.6，擊殺回血',s=>{wm(s,'poisonCloud',1.6);s.vamp+=0.03;}),
  S('prism','稜鏡',['laser','holyLight'],'雷射分裂、聖光 x1.4',s=>{wm(s,'laser',1.5);wm(s,'holyLight',1.4);}),
  S('armageddon','末日',['meteorW','blackHoleW'],'隕石與黑洞 x1.8',s=>{wm(s,'meteorW',1.8);wm(s,'blackHoleW',1.8);}),
@@ -126,11 +126,12 @@ const SYNERGIES=[
  Object.assign(S('ultSingularity','終極・奇點坍縮',['blackHoleW','arcaneOrb'],'🌟 全螢幕黑洞：每 16 秒把所有敵人吸到中心壓碎',s=>{s.ult.singularity=1;}),{ult:'singularity',needX:{blackHoleW:2,arcaneOrb:3}}),
 ];
 function wm(s,id,k){ s.wMul[id]=(s.wMul[id]||1)*k; }
-function baseStats(meta){ meta=meta||{}; return {ult:{},gunStreams:0,wProj:{},addMul:1+(meta.gate||0)*0.05,mulAdd:0,badMul:1,noDiv:false,shields:0,crit:0.05+(meta.crit||0)*0.02,critMul:2,splash:0,magnet:0.15,lanes:2,regen:0,ranged:0,pierce:0,atk:1+(meta.atk||0)*0.05,armor:(meta.armor||0)*0.03,startAdd:(meta.start||0)*3,coinMul:1+(meta.coin||0)*0.1,bossDmg:0,speed:1,vamp:0,fire:0,bossSlow:0,luck:0,doubleGate:0,rage:false,carry:0,thunder:0,cloneAdd:0,bossStart:0,revive:0,reviveN:10,goldGate:false,view:0,flatGate:0,aoe:0,rangedCrit:false,startMulX:1,elem:{fire:0,ice:0,thunder:0,phys:0,arcane:0,nature:0,holy:0},evoFire:1,resonance:[],weapons:{},wMul:{},wElem:{fire:0,ice:0,thunder:0,arcane:0,nature:0,holy:0,phys:0},evoW:{},slowZ:0,chain:0,area:0,holyHeal:0,cdMul:1,resThr:3}; }
+function baseStats(meta){ meta=meta||{}; const U_=(typeof Upgrades!=='undefined'?Upgrades:(typeof root!=='undefined'&&root.Upgrades)||(typeof require!=='undefined'?require('./upgrades.js'):null)); const s0=baseStats0(meta); return U_?U_.apply(s0,meta):s0; }
+function baseStats0(meta){ return {ult:{},gunStreams:0,wProj:{},addMul:1+(meta.gate||0)*0.05,mulAdd:0,badMul:1,noDiv:false,shields:0,crit:0.05+(meta.crit||0)*0.02,critMul:2,splash:0,magnet:0.15,lanes:2,regen:0,ranged:0,pierce:0,atk:1+(meta.atk||0)*0.05,armor:(meta.armor||0)*0.03,startAdd:(meta.start||0)*3,coinMul:1+(meta.coin||0)*0.1,bossDmg:0,speed:1,vamp:0,fire:0,bossSlow:0,luck:0,doubleGate:0,rage:false,carry:0,thunder:0,cloneAdd:0,bossStart:0,revive:0,reviveN:10,goldGate:false,view:0,flatGate:0,aoe:0,rangedCrit:false,startMulX:1,elem:{fire:0,ice:0,thunder:0,phys:0,arcane:0,nature:0,holy:0},evoFire:1,resonance:[],weapons:{},wMul:{},wElem:{fire:0,ice:0,thunder:0,arcane:0,nature:0,holy:0,phys:0},evoW:{},slowZ:0,chain:0,area:0,holyHeal:0,cdMul:1,resThr:3}; }
 // 元素標籤：同元素 3 級以上觸發共鳴
 const ELEM_TAG={fireball:'fire',meteorW:'fire',burn:'fire',iceShard:'ice',frostbite:'ice',chainLightning:'thunder',laser:'thunder',conductor:'thunder',lens:'thunder',arcaneOrb:'arcane',blackHoleW:'arcane',arcaneFocus:'arcane',gravity:'arcane',poisonCloud:'nature',tornado:'nature',toxin:'nature',holyLight:'holy',blessing:'holy',boomerang:'phys',orbitSaw:'phys',shockwave:'phys',missiles:'phys',sharpen:'phys',wingman:'phys',fire:'fire',mortar:'fire',rage:'fire',ice:'ice',armor:'ice',shield:'ice',thunder:'thunder',ranged:'thunder',speed:'thunder',atk:'phys',crit:'phys',critDmg:'phys',pierce:'phys',splash:'phys'};
-const ELEM_NAME={fire:'🔥火',ice:'❄️冰',thunder:'⚡雷',phys:'🗡️物理',arcane:'🔮奧術',nature:'☠️自然',holy:'✨神聖'};
-const RESONANCE={fire:['烈焰共鳴','攻擊 +25%',s=>s.atk+=0.25],ice:['寒冰共鳴','Boss 攻擊 -20%',s=>s.bossSlow+=0.2],thunder:['雷霆共鳴','射速 x1.3',s=>s.evoFire*=1.3],phys:['鋼鐵共鳴','爆擊傷害 +1',s=>s.critMul+=1],arcane:['奧術共鳴','所有武器 +20%',s=>{for(const k in s.wElem) s.wElem[k]+=0.2;}],nature:['自然共鳴','敵人移動 -20%',s=>s.slowZ=Math.min(0.7,s.slowZ+0.2)],holy:['神聖共鳴','每秒回復 1% 兵力',s=>s.regen+=0.01]};
+const ELEM_NAME={fire:'🔥火',ice:'❄️冰',thunder:'⚡雷',phys:'🗡️物理',arcane:'🔮魔法',nature:'☠️自然',holy:'✨神聖'};
+const RESONANCE={fire:['烈焰共鳴','攻擊 +25%',s=>s.atk+=0.25],ice:['寒冰共鳴','Boss 攻擊 -20%',s=>s.bossSlow+=0.2],thunder:['雷霆共鳴','射速 x1.3',s=>s.evoFire*=1.3],phys:['鋼鐵共鳴','爆擊傷害 +1',s=>s.critMul+=1],arcane:['魔法共鳴','所有武器 +20%',s=>{for(const k in s.wElem) s.wElem[k]+=0.2;}],nature:['自然共鳴','敵人移動 -20%',s=>s.slowZ=Math.min(0.7,s.slowZ+0.2)],holy:['神聖共鳴','每秒回復 1% 兵力',s=>s.regen+=0.01]};
 // 進化（Vampire Survivors 式）：base 滿級 + 擁有 partner → 出現進化卡
 const EV=(id,name,base,partner,desc,fx)=>({id,name,base,partner,desc,fx,rar:'EVO'});
 const EVOLUTIONS=[

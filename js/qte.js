@@ -3,7 +3,9 @@
 const KINDS=['grid_1to9','shrink_ring','mash_meter','swipe_arrows','memory_colors','find_impostor','charge_green'];
 function tierOf(stage){ return Math.min(10, Math.floor(Math.min(1,Math.max(0,(stage-1)/999))*10)); }
 function params(stage){ const t=tierOf(stage); return { t, timeMul:1-0.035*t, judgeMul:1-0.04*t, failFrac:0.12+0.01*t }; }
-function pick(seed,stage,ultIndex){ let x=((seed^stage*0x9e37^ultIndex*0xb055)>>>0)||1; x^=x<<13; x^=x>>>17; x^=x<<5; return KINDS[(x>>>0)%KINDS.length]; }
+function unlockedKinds(stage){ const C=root.CONFIG, U=C&&C.v7&&C.v7.unlocks&&C.v7.unlocks.qte; if(!U) return KINDS; const k=KINDS.filter(q=>(U[q]||1)<=stage); return k.length?k:KINDS; }
+// v0.7 開放表：只從已開放的種類抽；剛開放的那一關，第一次大招必出新種類
+function pick(seed,stage,ultIndex){ const C=root.CONFIG, U=C&&C.v7&&C.v7.unlocks&&C.v7.unlocks.qte; if(U&&ultIndex===1){ const nw=KINDS.find(q=>U[q]===stage&&stage>1); if(nw) return nw; } const K=unlockedKinds(stage); let x=((seed^stage*0x9e37^ultIndex*0xb055)>>>0)||1; x^=x<<13; x^=x>>>17; x^=x<<5; return K[(x>>>0)%K.length]; }
 function make(kind, stage, onDone){
   const P=params(stage); const el=document.createElement('div'); el.id='qte'; el.className='qte on';
   const state={kind, done:false, ok:false, P, el, stage};

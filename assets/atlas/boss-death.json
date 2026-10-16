@@ -1,0 +1,454 @@
+{
+ "meta": {
+  "image": "boss-death.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "format": "RGBA8888",
+  "license": "CC0 (see LICENSE refs in PICKS-gate-runner-zh-TW.md)"
+ },
+ "frames": {
+  "boom_a/00": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/01": {
+   "frame": {
+    "x": 194,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/02": {
+   "frame": {
+    "x": 388,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/03": {
+   "frame": {
+    "x": 582,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/04": {
+   "frame": {
+    "x": 776,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/05": {
+   "frame": {
+    "x": 0,
+    "y": 194,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/06": {
+   "frame": {
+    "x": 194,
+    "y": 194,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/07": {
+   "frame": {
+    "x": 388,
+    "y": 194,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/08": {
+   "frame": {
+    "x": 582,
+    "y": 194,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/09": {
+   "frame": {
+    "x": 776,
+    "y": 194,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/10": {
+   "frame": {
+    "x": 0,
+    "y": 388,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/11": {
+   "frame": {
+    "x": 194,
+    "y": 388,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/12": {
+   "frame": {
+    "x": 388,
+    "y": 388,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/13": {
+   "frame": {
+    "x": 582,
+    "y": 388,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "boom_a/14": {
+   "frame": {
+    "x": 776,
+    "y": 388,
+    "w": 192,
+    "h": 192
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 1.png"
+  },
+  "fx/light_01": {
+   "frame": {
+    "x": 0,
+    "y": 582,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/light_01.png"
+  },
+  "fx/light_03": {
+   "frame": {
+    "x": 162,
+    "y": 582,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/light_03.png"
+  },
+  "fx/smoke_04": {
+   "frame": {
+    "x": 324,
+    "y": 582,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/smoke_04.png"
+  },
+  "fx/smoke_07": {
+   "frame": {
+    "x": 486,
+    "y": 582,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/smoke_07.png"
+  },
+  "fx/circle_05": {
+   "frame": {
+    "x": 648,
+    "y": 582,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/circle_05.png"
+  },
+  "boom_b/00": {
+   "frame": {
+    "x": 810,
+    "y": 582,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/01": {
+   "frame": {
+    "x": 0,
+    "y": 744,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/02": {
+   "frame": {
+    "x": 162,
+    "y": 744,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/03": {
+   "frame": {
+    "x": 324,
+    "y": 744,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/04": {
+   "frame": {
+    "x": 486,
+    "y": 744,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/05": {
+   "frame": {
+    "x": 648,
+    "y": 744,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/06": {
+   "frame": {
+    "x": 810,
+    "y": 744,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/07": {
+   "frame": {
+    "x": 0,
+    "y": 906,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/08": {
+   "frame": {
+    "x": 162,
+    "y": 906,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/09": {
+   "frame": {
+    "x": 324,
+    "y": 906,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/10": {
+   "frame": {
+    "x": 486,
+    "y": 906,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/11": {
+   "frame": {
+    "x": 648,
+    "y": 906,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/12": {
+   "frame": {
+    "x": 810,
+    "y": 906,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/13": {
+   "frame": {
+    "x": 0,
+    "y": 1068,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boom_b/14": {
+   "frame": {
+    "x": 162,
+    "y": 1068,
+    "w": 160,
+    "h": 160
+   },
+   "source": "vfx/oga-2d-explosion-animations-frame-by-frame/Free - 2D Explosion Animations/explosion 3.png"
+  },
+  "boss/slime_fire_rest": {
+   "frame": {
+    "x": 324,
+    "y": 1068,
+    "w": 128,
+    "h": 128
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Double/slime_fire_rest.png"
+  },
+  "boss/slime_fire_flat": {
+   "frame": {
+    "x": 454,
+    "y": 1068,
+    "w": 128,
+    "h": 128
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Double/slime_fire_flat.png"
+  },
+  "boss/slime_spike_rest": {
+   "frame": {
+    "x": 584,
+    "y": 1068,
+    "w": 128,
+    "h": 128
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Double/slime_spike_rest.png"
+  },
+  "boss/slime_spike_flat": {
+   "frame": {
+    "x": 714,
+    "y": 1068,
+    "w": 128,
+    "h": 128
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Double/slime_spike_flat.png"
+  },
+  "fx/star_06": {
+   "frame": {
+    "x": 844,
+    "y": 1068,
+    "w": 64,
+    "h": 64
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/star_06.png"
+  },
+  "fx/star_07": {
+   "frame": {
+    "x": 910,
+    "y": 1068,
+    "w": 64,
+    "h": 64
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/star_07.png"
+  },
+  "fx/flare_01": {
+   "frame": {
+    "x": 0,
+    "y": 1230,
+    "w": 64,
+    "h": 64
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/flare_01.png"
+  },
+  "fx/spark_05": {
+   "frame": {
+    "x": 66,
+    "y": 1230,
+    "w": 64,
+    "h": 64
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/spark_05.png"
+  },
+  "fx/spark_06": {
+   "frame": {
+    "x": 132,
+    "y": 1230,
+    "w": 64,
+    "h": 64
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/spark_06.png"
+  },
+  "fx/dirt_01": {
+   "frame": {
+    "x": 198,
+    "y": 1230,
+    "w": 64,
+    "h": 64
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/dirt_01.png"
+  },
+  "fx/dirt_02": {
+   "frame": {
+    "x": 264,
+    "y": 1230,
+    "w": 64,
+    "h": 64
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/dirt_02.png"
+  },
+  "fx/dirt_03": {
+   "frame": {
+    "x": 330,
+    "y": 1230,
+    "w": 64,
+    "h": 64
+   },
+   "source": "vfx/kenney-particle-pack/PNG (Transparent)/dirt_03.png"
+  },
+  "coin/coin_gold": {
+   "frame": {
+    "x": 396,
+    "y": 1230,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Tiles/Default/coin_gold.png"
+  },
+  "coin/coin_gold_side": {
+   "frame": {
+    "x": 462,
+    "y": 1230,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Tiles/Default/coin_gold_side.png"
+  }
+ }
+}

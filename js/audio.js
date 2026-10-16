@@ -12,10 +12,16 @@ function ctx(){ if(ac) return ac; try{ ac=new (root.AudioContext||root.webkitAud
   return ac; }
 function load(){ if(loading||!ac) return loading; const get=(u)=>fetch(u).then(r=>r.arrayBuffer()).then(a=>new Promise((ok,no)=>ac.decodeAudioData(a,ok,no)));
   loading=Promise.all([...FILES.map(n=>get('assets/sfx/'+n+'.'+EXT).then(b=>buf[n]=b).catch(()=>{})), get('assets/music/bgm_juhani_level1.'+EXT).then(b=>buf.bgm=b).catch(()=>{})]).then(()=>{ if(bgmWanted) startBgm(); });
-  return loading; }
+  XPRE.forEach(xload); return loading; }
 function unlock(){ const a=ctx(); if(!a) return; if(a.state!=='running') a.resume().catch(()=>{}); if(BF.web&&(!primed||a.state!=='running')){ primed=true; try{ const b=a.createBuffer(1,1,22050), s=a.createBufferSource(); s.buffer=b; s.connect(a.destination); s.start(0); }catch(e){} } load(); if(bgmWanted&&!bgmSrc) startBgm(); }
 ['pointerdown','touchstart','touchend','click','keydown'].forEach(ev=>root.addEventListener&&root.addEventListener(ev,unlock,{capture:true,passive:true}));
 document.addEventListener('visibilitychange',()=>{ if(!ac) return; if(document.hidden) ac.suspend().catch(()=>{}); else ac.resume().catch(()=>{}); });
+// v0.7：額外音效（子資料夾，懶載入）＋可依標籤停止（Boss 擊敗演出跳過時淡出）
+const xbuf={}; let xlive=[];
+function xload(n){ if(!ac) return; if(n in xbuf) return; xbuf[n]=0; fetch('assets/sfx/'+n+'.'+EXT).then(r=>r.arrayBuffer()).then(a=>new Promise((ok,no)=>ac.decodeAudioData(a,ok,no))).then(b=>{ xbuf[n]=b; }).catch(()=>{ xbuf[n]=null; }); }
+function xplay(n,rate,vol,tag){ if(!ac||muted) return false; const b=xbuf[n]; if(!b){ xload(n); return false; } const s=ac.createBufferSource(), g=ac.createGain(); s.buffer=b; s.playbackRate.value=rate||1; g.gain.value=vol===undefined?1:vol; s.connect(g); g.connect(sfxBus); s.start(); const o={s,g,n,tag}; xlive.push(o); s.onended=()=>{ xlive=xlive.filter(x=>x!==o); }; return true; }
+function xstop(tag,keep){ if(!ac) return; xlive.forEach(o=>{ if(o.tag!==tag||o.n===keep) return; try{ o.g.gain.setTargetAtTime(0,ac.currentTime,0.05); o.s.stop(ac.currentTime+0.2); }catch(e){} }); xlive=xlive.filter(o=>o.tag!==tag||o.n===keep); }
+const XPRE=(root.BossDeath&&root.BossDeath.SOUNDS||[]).map(n=>'boss-death/'+n);
 function startBgm(){ if(!ac||!buf.bgm||bgmSrc) return; bgmSrc=ac.createBufferSource(); bgmSrc.buffer=buf.bgm; bgmSrc.loop=true; bgmSrc.connect(musicBus); bgmSrc.start(); }
 function play(n,vol,rate,minGap){ if(!ac||muted) return false; const b=buf[n]; if(!b) return false; const now=ac.currentTime; if(minGap&&now-(last[n]||-9)<minGap) return true; last[n]=now;
   const s=ac.createBufferSource(); s.buffer=b; s.playbackRate.value=rate||1; const g=ac.createGain(); g.gain.value=vol===undefined?1:vol; s.connect(g); g.connect(sfxBus); s.start(); return true; }
@@ -24,7 +30,7 @@ function tone(f, d, type, vol, slide, delay){ if(!ac) return; const t=ac.current
   g.gain.setValueAtTime(vol||0.3,t); g.gain.exponentialRampToValueAtTime(0.001,t+d); o.connect(g); g.connect(sfxBus); o.start(t); o.stop(t+d+0.02); }
 const P=(n,v,r,gap,fb)=>()=>{ if(!play(n,v,r,gap)&&fb) fb(); };
 const SFX={
-  init:unlock, get muted(){return muted;}, get state(){ return ac?ac.state:'none'; }, get loaded(){ return Object.keys(buf).length; },
+  init:unlock, ext:xplay, extStop:xstop, extLoad:xload, get muted(){return muted;}, get state(){ return ac?ac.state:'none'; }, get loaded(){ return Object.keys(buf).length; },
   toggle(){ muted=!muted; localStorage.setItem('gr_mute',muted?'1':'0'); if(master) master.gain.value=muted?0:0.9; return muted; },
   bgm(on){ bgmWanted=on!==false; if(bgmWanted) { unlock(); startBgm(); } else if(bgmSrc){ bgmSrc.stop(); bgmSrc=null; } },
   good(combo){ if(!play('gate_good',0.8,1+Math.min(12,combo||0)*0.05)) tone(440,0.12,'square',0.2,1.5); },

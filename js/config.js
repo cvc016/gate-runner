@@ -120,6 +120,27 @@ const CONFIG = {
       hitsA:1.6, hitsB:0.12, hitsExp:0.85, waveA:12, waveB:0.06, miniEqA:40, miniEqB:0.05, finalMul:3,
       score:{ kill:10, waveSq:50, mini:2000, final:10000, qte:500, qtePerfect:800, army:5 }, coinPer:1000, coinDailyCap:300, zCountA: 12, zCountB: 2, zCountMax: 60, lateFrom: 20, zCountMaxLate: 90, hpGrowLate: 1.09, finalSlamMul: 1.25, threatCap: 0.5, hordeLossLo: 0.05, hordeLossHi: 0.2, adjUp: 1.15, adjDown: 0.87, adjExp: 0.3, lossEmaK: 0.5, hordeLossTarget: 0.12, chargerFrom: 6, chargerFrac: 0.12, chargerMin: 3, chargerSp: 3.0, adjMin: 0.5, adjMax: 3, regTarget: 0.05, regLo: 0.02, regHi: 0.08, chargeFullBelow:0.02, chargeMinFrac: 0.03, chargeEmaK: 0.5, chargeExp: 0.8, chargeUp: 1.5, chargeDown: 0.67, chargeKMin: 0.1, chargeKMax: 4, chargeAfter: 12, chargeSpeed: 2.5, hordeLossSoft: 0.2, hordeLossSoftMul: 0.25, bossLossSoft: 0.45, bossLossSoftMul: 0.2, hpOverDps: 1.6, simFrac: 0.75, simRamp0: 0.45, simRampN: 0.07, hpGrow: 1.05, threatFrac: 0.8, threatGrow: 1.13, armySoft: 1e9, armyHard: 1e15, bossSecMini: 25, bossSecFinal: 45 },
   },
+  // ===== v0.7（DESIGN-v7-zh-TW.md）=====
+  v7: {
+    upgrades: [ {k:'atk',per:0.06,max:200,c0:40,w:1.0}, {k:'rate',per:0.04,max:100,c0:50,w:0.8},
+      {k:'armor',per:0.015,max:60,c0:40,w:0.7}, {k:'start',per:2,max:60,c0:30,w:0.5},
+      {k:'gate',per:0.04,max:60,c0:35,w:0.5}, {k:'boss',per:0.05,max:80,c0:45,w:0.5},
+      {k:'crit',per:0.015,max:30,c0:45,w:0.35}, {k:'coin',per:0.08,max:25,c0:60,w:0.6} ],
+    priceExp: 1.5, priceGrowth: 1.04,
+    coin: { clearA:15, clearB:2.4, clearExp:1.15, pos10Mul:2, waveA:2, waveB:0.3, segA:5, segB:0.9, exp:1.1, failClearFrac:0.3, rouA:10, rouB:1.2, permSlots:2, restBonus:1.2 },
+    wallAnchors: [[10,1.1],[20,1.8],[30,2.7],[40,3.6],[50,4.6],[60,5.4],[70,6.3],[80,7.1],[90,7.9],[100,8.7],[150,12.5],[200,17.5],[300,29],[500,60],[750,95],[1000,130]],
+    restPos5: 0.85, enemyWallExp: 0.5,
+    zombieHpMul: 1.3, bossHpMul: 1.4, bossHpMulEarly: [1.2,1.2,1.2],
+    firstHordeAdd: 10, lastHordeMin: 50, lastWaveDur: 12, lastWaveHpEarly: [0.6,0.7,0.8],
+    mulGate: { value: 2, capEarly: 2, capHard: 1, capEarlyAfter100: 3 }, plusGate: [8, 30],
+    stoneGate: { from:11, tapsA:3, tapsStep:20, tapsMax:10, hardFrom:151, hardChance:0.15, hardExtra:3,
+      hitExpand:1.4, hitMinPx:88, tapMaxMs:280, tapSlopPx:14, tapMinGapMs:60, tapRange:[8,40],
+      penalty:{ lossFrac:0.12, lossFlat:3, stunSec:0.6, halfIfTapped:0.5, hardLossFrac:0.15, hardStun:0.8 },
+      bossLevelMax:1, pGood:[[1,0.85],[41,0.75],[101,0.65],[301,0.55]], restBonus:0.10, newBoost:{ mul:3, levels:3 },
+      unlockMap:{21:11,26:14,31:17,41:21,51:26,61:31,71:41,81:51,91:61} }, // v0.7 特殊門企劃 §8；威霆：石頭門第 11 關起，開放關卡等比例提前
+    unlocks:{ upgrades:{ atk:2, armor:2, start:2, rate:3, gate:5, coin:8, boss:10, crit:15 }, qte:{ mash_meter:1, shrink_ring:1, charge_green:3, grid_1to9:10, swipe_arrows:15, memory_colors:25, find_impostor:35 }, obstacles:{ saw:3, pit:4, hammer:6, push:8 } }, // 特殊門企劃 §6／§8
+    endless: { hitsA:1.6, hitsG:1.06, waveA:12, waveB:1.5, waveMax:90, pickEvery:2, miniPicks:1, finalPicks:2, armyG:1.04, miniEqA:40, miniEqB:0.05, finalMul:3 },
+  },
   // 輪盤
   rouletteSlots: 12, rouletteOwned: 1.35, rouletteRecent: 5, rouletteRecentMul: 0.4, rouletteNewPity: 3, rouletteAutoClaim: 3,
 };

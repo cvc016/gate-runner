@@ -4,7 +4,7 @@ const CONFIG = root.CONFIG || require('./config.js');
 const tierM = t => Math.pow(CONFIG.tierPlayerScale,t);
 const critExp = s => 1 + Math.min(1,s.crit)*(s.critMul-1);
 function gateValue(g){ return g.v + (g.shoot||0)*(g.step||0); }
-function applyGate(a, g, s, rnd){ rnd=rnd||Math.random; const reps=rnd()<s.doubleGate?2:1; const v=gateValue(g);
+function applyGate(a, g, s, rnd){ if(g.op==='stone') return a; /* v0.7 石頭門：效果在 game.js 處理 */ rnd=rnd||Math.random; const reps=rnd()<s.doubleGate?2:1; const v=gateValue(g);
   for(let i=0;i<reps;i++){
     if(g.op==='+') a+=Math.round(v*s.addMul)+s.flatGate+s.cloneAdd;
     else if(g.op==='x'){ a=Math.round(a*(v+s.mulAdd))+s.flatGate+(s.cloneAdd>0?Math.round(5*s.cloneAdd/2):0); }
@@ -18,8 +18,8 @@ function gunStreams(s){ const base=(s.twinGun?CONFIG.gunTwinStreams:CONFIG.gunBa
 function gunRate(army, s, tier, boost){
   const a=Math.max(0,army);
   const raw=CONFIG.baseFireRate + a*CONFIG.fireRatePerArmy;
-  const rate=Math.min(CONFIG.fireRateCap, raw);
-  return Math.min(CONFIG.fireRateCap*1.6, rate*(1+0.15*(s.ranged||0))*(boost||1)*(s.evoFire||1)); } // 兵力只影響射速；卡片小幅加成，總上限 cap×1.6
+  const rm=s.rateMul||1; /* v0.7 永久升級「射速」：射速與上限都 ×rateMul */ const rate=Math.min(CONFIG.fireRateCap*rm, raw*rm);
+  return Math.min(CONFIG.fireRateCap*1.6*rm, rate*(1+0.15*(s.ranged||0))*(boost||1)*(s.evoFire||1)); } // 兵力只影響射速；卡片小幅加成，總上限 cap×1.6
 function gunProfile(army, s, tier, boost){ const streams=gunStreams(s); const rate=gunRate(army,s,tier,boost); return { streams, spread:0.05*(streams-1), rate, bulletsPerSec:rate*streams, size:1+0.1*(streams-1), dmg:CONFIG.gunDmg*s.atk*tierM(tier) }; }
 // 單位換算：1 隻基本殭屍（擊殺當量 1）= HP0 點血；子彈 10 點 × 階層倍率
 const HP0=()=>CONFIG.gunDmg*CONFIG.horde.hitsPerZombie*CONFIG.horde.hpMul;
@@ -100,9 +100,10 @@ function simulateStage(L, s, army, opts){ opts=opts||{}; const tier=L.tier, oh=o
 // v0.6（DESIGN-v6 §3）：Boss HP = 殭屍 HP × 當量 × (1+0.02×tier)；鎖血、接近上限、atkFrac
 function bossV6(Stage, stage, kind, sections){ const V=CONFIG.v6.boss, {tier,s}=Stage.info(stage); let eq=V.miniEq[s-1];
   if(kind==='boss'){ eq*=V.finalMulByPos[s-1]+(s===10?V.finalPos10PerTier*tier:0); } else if((sections||2)>5) eq*=V.miniManySegMul;
-  const fk=kind==='boss'?'final':'mini'; return { hp:Math.round(Stage.zombieHp(stage,1)*eq*(1+V.tierGrowth*tier)), eq, atkFrac:V.atkFrac[fk]*(fk==='final'&&tier>=(CONFIG.v6.lateFinalFromTier||99)?CONFIG.v6.lateFinalAtkMul:1), preCap:V.preCap[fk], summonN:V.lockSummon[fk], summonHp:Stage.zombieHp(stage)*V.summonHpMul }; }
-function bossBoost(Stage,stage,kind){ const B=CONFIG.bossHpBoost||{}; const I=Stage.info(stage), x=B[kind==='boss'?(I.tier>=1&&B.bossLater?'bossLater':'boss'):'mini']; let m=Array.isArray(x)?x[I.s-1]:(x||1); if(kind==='boss'&&I.tier>=1) m*=(I.tier<=2?B.finalTierMulEarly:B.finalTierMul)||1; if(kind!=='boss'&&I.tier===0&&I.s>=6) m*=B.miniT0Late||1; return m; }
-function prepareStage(Stage, Abil, seed, stage, lanes, opt){ opt=opt||{}; const L=Stage.generateStage(seed,stage,lanes,opt.kind,{waveOffset:opt.waveOffset||0,sections:opt.sections}); const b=L.boss; if(b.kind==='normal') return L;
+  const fk=kind==='boss'?'final':'mini'; return { hp:Math.round(Stage.zombieHp(stage,1)*eq*(1+V.tierGrowth*tier)*v7BossMul(stage)), eq, atkFrac:V.atkFrac[fk]*(fk==='final'&&tier>=(CONFIG.v6.lateFinalFromTier||99)?CONFIG.v6.lateFinalAtkMul:1), preCap:V.preCap[fk], summonN:V.lockSummon[fk], summonHp:Stage.zombieHp(stage)*V.summonHpMul }; }
+function v7BossMul(stage){ const V7=CONFIG.v7; if(!V7) return 1; return (stage<=V7.bossHpMulEarly.length?V7.bossHpMulEarly[stage-1]:V7.bossHpMul); } /* v0.7：Boss HP = 基礎 × W(L) × 1.4（第 1–3 關 1.2） */
+function bossBoost(Stage,stage,kind){ if(CONFIG.v7) return 1; /* v0.7：停用逐關補丁表，改用 W(L) */  const B=CONFIG.bossHpBoost||{}; const I=Stage.info(stage), x=B[kind==='boss'?(I.tier>=1&&B.bossLater?'bossLater':'boss'):'mini']; let m=Array.isArray(x)?x[I.s-1]:(x||1); if(kind==='boss'&&I.tier>=1) m*=(I.tier<=2?B.finalTierMulEarly:B.finalTierMul)||1; if(kind!=='boss'&&I.tier===0&&I.s>=6) m*=B.miniT0Late||1; return m; }
+function prepareStage(Stage, Abil, seed, stage, lanes, opt){ opt=opt||{}; const L=Stage.generateStage(seed,stage,lanes,opt.kind,{waveOffset:opt.waveOffset||0,sections:opt.sections,xQuota:opt.xQuota,lastSeg:opt.lastSeg}); const b=L.boss; if(b.kind==='normal') return L;
   const s0=Abil.baseStats({}); const entry=opt.entry||Stage.startArmy(stage,0);
   const pre=opt.noSim?entry:(simulateStage(Object.assign({},L,{boss:{hp:1,atk:0,kind:'normal'}}),s0,entry).preBoss||0);
   const A=Math.max(pre, entry*(opt.entry?1:4)); const v=bossV6(Stage,stage,b.kind,opt.sections);
