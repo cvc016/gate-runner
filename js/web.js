@@ -15,6 +15,6 @@
   if('serviceWorker' in navigator && location.protocol!=='file:'){
     var reloaded=false, had=!!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener('controllerchange',function(){ if(!had){ had=true; return; } if(reloaded) return; reloaded=true; location.reload(); });
-    window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js',{scope:'./'}).then(function(r){ r.update&&r.update(); }).catch(function(e){ console.warn('sw',e); }); });
+    window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js',{scope:'./'}).then(function(r){ if(navigator.onLine&&r.update) r.update().catch(function(){}); }).catch(function(e){ if(navigator.onLine) console.warn('sw',e); }); });
   }
 })();
