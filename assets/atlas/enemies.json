@@ -1,0 +1,823 @@
+{
+ "meta": {
+  "image": "enemies.png",
+  "size": {
+   "w": 2048,
+   "h": 512
+  },
+  "format": "RGBA8888",
+  "license": "CC0 (see LICENSE refs in PICKS-gate-runner-zh-TW.md)"
+ },
+ "frames": {
+  "boss/slime_fire_flat_x3": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_fire_flat.png"
+  },
+  "boss/slime_fire_rest_x3": {
+   "frame": {
+    "x": 194,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_fire_rest.png"
+  },
+  "boss/slime_fire_walk_a_x3": {
+   "frame": {
+    "x": 388,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_fire_walk_a.png"
+  },
+  "boss/slime_fire_walk_b_x3": {
+   "frame": {
+    "x": 582,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_fire_walk_b.png"
+  },
+  "boss/slime_spike_flat_x3": {
+   "frame": {
+    "x": 776,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_spike_flat.png"
+  },
+  "boss/slime_spike_rest_x3": {
+   "frame": {
+    "x": 970,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_spike_rest.png"
+  },
+  "boss/slime_spike_walk_a_x3": {
+   "frame": {
+    "x": 1164,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_spike_walk_a.png"
+  },
+  "boss/slime_spike_walk_b_x3": {
+   "frame": {
+    "x": 1358,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_spike_walk_b.png"
+  },
+  "enemy2/flyMan_fly": {
+   "frame": {
+    "x": 1552,
+    "y": 0,
+    "w": 112,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/flyMan_fly.png"
+  },
+  "enemy2/flyMan_jump": {
+   "frame": {
+    "x": 1666,
+    "y": 0,
+    "w": 116,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/flyMan_jump.png"
+  },
+  "enemy2/flyMan_stand": {
+   "frame": {
+    "x": 1784,
+    "y": 0,
+    "w": 112,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/flyMan_stand.png"
+  },
+  "enemy2/flyMan_still_fly": {
+   "frame": {
+    "x": 1898,
+    "y": 0,
+    "w": 116,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/flyMan_still_fly.png"
+  },
+  "enemy2/flyMan_still_jump": {
+   "frame": {
+    "x": 0,
+    "y": 194,
+    "w": 120,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/flyMan_still_jump.png"
+  },
+  "enemy2/flyMan_still_stand": {
+   "frame": {
+    "x": 122,
+    "y": 194,
+    "w": 116,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/flyMan_still_stand.png"
+  },
+  "enemy2/spikeBall1": {
+   "frame": {
+    "x": 240,
+    "y": 194,
+    "w": 123,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/spikeBall1.png"
+  },
+  "enemy2/spikeMan_jump": {
+   "frame": {
+    "x": 365,
+    "y": 194,
+    "w": 94,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/spikeMan_jump.png"
+  },
+  "enemy2/spikeMan_stand": {
+   "frame": {
+    "x": 461,
+    "y": 194,
+    "w": 74,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/spikeMan_stand.png"
+  },
+  "enemy2/spikeMan_walk1": {
+   "frame": {
+    "x": 537,
+    "y": 194,
+    "w": 97,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/spikeMan_walk1.png"
+  },
+  "enemy2/spikeMan_walk2": {
+   "frame": {
+    "x": 636,
+    "y": 194,
+    "w": 74,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/spikeMan_walk2.png"
+  },
+  "enemy2/springMan_hurt": {
+   "frame": {
+    "x": 712,
+    "y": 194,
+    "w": 100,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/springMan_hurt.png"
+  },
+  "enemy2/springMan_stand": {
+   "frame": {
+    "x": 814,
+    "y": 194,
+    "w": 100,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/springMan_stand.png"
+  },
+  "enemy2/sun1": {
+   "frame": {
+    "x": 916,
+    "y": 194,
+    "w": 123,
+    "h": 128
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/sun1.png"
+  },
+  "enemy2/sun2": {
+   "frame": {
+    "x": 1041,
+    "y": 194,
+    "w": 128,
+    "h": 123
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/sun2.png"
+  },
+  "enemy2/spikeBall_2": {
+   "frame": {
+    "x": 1171,
+    "y": 194,
+    "w": 128,
+    "h": 122
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/spikeBall_2.png"
+  },
+  "enemy2/wingMan1": {
+   "frame": {
+    "x": 1301,
+    "y": 194,
+    "w": 128,
+    "h": 93
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/wingMan1.png"
+  },
+  "enemy2/wingMan5": {
+   "frame": {
+    "x": 1431,
+    "y": 194,
+    "w": 128,
+    "h": 87
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/wingMan5.png"
+  },
+  "enemy2/cloud": {
+   "frame": {
+    "x": 1561,
+    "y": 194,
+    "w": 128,
+    "h": 66
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/cloud.png"
+  },
+  "enemy2/wingMan2": {
+   "frame": {
+    "x": 1691,
+    "y": 194,
+    "w": 128,
+    "h": 66
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/wingMan2.png"
+  },
+  "enemy/barnacle_attack_a": {
+   "frame": {
+    "x": 1821,
+    "y": 194,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/barnacle_attack_a.png"
+  },
+  "enemy/barnacle_attack_b": {
+   "frame": {
+    "x": 1887,
+    "y": 194,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/barnacle_attack_b.png"
+  },
+  "enemy/barnacle_attack_rest": {
+   "frame": {
+    "x": 1953,
+    "y": 194,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/barnacle_attack_rest.png"
+  },
+  "enemy/bee_a": {
+   "frame": {
+    "x": 0,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/bee_a.png"
+  },
+  "enemy/bee_b": {
+   "frame": {
+    "x": 66,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/bee_b.png"
+  },
+  "enemy/bee_rest": {
+   "frame": {
+    "x": 132,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/bee_rest.png"
+  },
+  "enemy/block_fall": {
+   "frame": {
+    "x": 198,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/block_fall.png"
+  },
+  "enemy/block_idle": {
+   "frame": {
+    "x": 264,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/block_idle.png"
+  },
+  "enemy/block_rest": {
+   "frame": {
+    "x": 330,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/block_rest.png"
+  },
+  "enemy/fish_blue_rest": {
+   "frame": {
+    "x": 396,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fish_blue_rest.png"
+  },
+  "enemy/fish_blue_swim_a": {
+   "frame": {
+    "x": 462,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fish_blue_swim_a.png"
+  },
+  "enemy/fish_blue_swim_b": {
+   "frame": {
+    "x": 528,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fish_blue_swim_b.png"
+  },
+  "enemy/fish_purple_down": {
+   "frame": {
+    "x": 594,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fish_purple_down.png"
+  },
+  "enemy/fish_purple_rest": {
+   "frame": {
+    "x": 660,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fish_purple_rest.png"
+  },
+  "enemy/fish_purple_up": {
+   "frame": {
+    "x": 726,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fish_purple_up.png"
+  },
+  "enemy/fish_yellow_rest": {
+   "frame": {
+    "x": 792,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fish_yellow_rest.png"
+  },
+  "enemy/fish_yellow_swim_a": {
+   "frame": {
+    "x": 858,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fish_yellow_swim_a.png"
+  },
+  "enemy/fish_yellow_swim_b": {
+   "frame": {
+    "x": 924,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fish_yellow_swim_b.png"
+  },
+  "enemy/fly_a": {
+   "frame": {
+    "x": 990,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fly_a.png"
+  },
+  "enemy/fly_b": {
+   "frame": {
+    "x": 1056,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fly_b.png"
+  },
+  "enemy/fly_rest": {
+   "frame": {
+    "x": 1122,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/fly_rest.png"
+  },
+  "enemy/frog_idle": {
+   "frame": {
+    "x": 1188,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/frog_idle.png"
+  },
+  "enemy/frog_jump": {
+   "frame": {
+    "x": 1254,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/frog_jump.png"
+  },
+  "enemy/frog_rest": {
+   "frame": {
+    "x": 1320,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/frog_rest.png"
+  },
+  "enemy/ladybug_fly": {
+   "frame": {
+    "x": 1386,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/ladybug_fly.png"
+  },
+  "enemy/ladybug_rest": {
+   "frame": {
+    "x": 1452,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/ladybug_rest.png"
+  },
+  "enemy/ladybug_walk_a": {
+   "frame": {
+    "x": 1518,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/ladybug_walk_a.png"
+  },
+  "enemy/ladybug_walk_b": {
+   "frame": {
+    "x": 1584,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/ladybug_walk_b.png"
+  },
+  "enemy/mouse_rest": {
+   "frame": {
+    "x": 1650,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/mouse_rest.png"
+  },
+  "enemy/mouse_walk_a": {
+   "frame": {
+    "x": 1716,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/mouse_walk_a.png"
+  },
+  "enemy/mouse_walk_b": {
+   "frame": {
+    "x": 1782,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/mouse_walk_b.png"
+  },
+  "enemy/saw_a": {
+   "frame": {
+    "x": 1848,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/saw_a.png"
+  },
+  "enemy/saw_b": {
+   "frame": {
+    "x": 1914,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/saw_b.png"
+  },
+  "enemy/saw_rest": {
+   "frame": {
+    "x": 1980,
+    "y": 324,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/saw_rest.png"
+  },
+  "enemy/slime_block_jump": {
+   "frame": {
+    "x": 0,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_block_jump.png"
+  },
+  "enemy/slime_block_rest": {
+   "frame": {
+    "x": 66,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_block_rest.png"
+  },
+  "enemy/slime_block_walk_a": {
+   "frame": {
+    "x": 132,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_block_walk_a.png"
+  },
+  "enemy/slime_block_walk_b": {
+   "frame": {
+    "x": 198,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_block_walk_b.png"
+  },
+  "enemy/slime_fire_flat": {
+   "frame": {
+    "x": 264,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_fire_flat.png"
+  },
+  "enemy/slime_fire_rest": {
+   "frame": {
+    "x": 330,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_fire_rest.png"
+  },
+  "enemy/slime_fire_walk_a": {
+   "frame": {
+    "x": 396,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_fire_walk_a.png"
+  },
+  "enemy/slime_fire_walk_b": {
+   "frame": {
+    "x": 462,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_fire_walk_b.png"
+  },
+  "enemy/slime_normal_flat": {
+   "frame": {
+    "x": 528,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_normal_flat.png"
+  },
+  "enemy/slime_normal_rest": {
+   "frame": {
+    "x": 594,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_normal_rest.png"
+  },
+  "enemy/slime_normal_walk_a": {
+   "frame": {
+    "x": 660,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_normal_walk_a.png"
+  },
+  "enemy/slime_normal_walk_b": {
+   "frame": {
+    "x": 726,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_normal_walk_b.png"
+  },
+  "enemy/slime_spike_flat": {
+   "frame": {
+    "x": 792,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_spike_flat.png"
+  },
+  "enemy/slime_spike_rest": {
+   "frame": {
+    "x": 858,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_spike_rest.png"
+  },
+  "enemy/slime_spike_walk_a": {
+   "frame": {
+    "x": 924,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_spike_walk_a.png"
+  },
+  "enemy/slime_spike_walk_b": {
+   "frame": {
+    "x": 990,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/slime_spike_walk_b.png"
+  },
+  "enemy/snail_rest": {
+   "frame": {
+    "x": 1056,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/snail_rest.png"
+  },
+  "enemy/snail_shell": {
+   "frame": {
+    "x": 1122,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/snail_shell.png"
+  },
+  "enemy/snail_walk_a": {
+   "frame": {
+    "x": 1188,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/snail_walk_a.png"
+  },
+  "enemy/snail_walk_b": {
+   "frame": {
+    "x": 1254,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/snail_walk_b.png"
+  },
+  "enemy/worm_normal_move_a": {
+   "frame": {
+    "x": 1320,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/worm_normal_move_a.png"
+  },
+  "enemy/worm_normal_move_b": {
+   "frame": {
+    "x": 1386,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/worm_normal_move_b.png"
+  },
+  "enemy/worm_normal_rest": {
+   "frame": {
+    "x": 1452,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/worm_normal_rest.png"
+  },
+  "enemy/worm_ring_move_a": {
+   "frame": {
+    "x": 1518,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/worm_ring_move_a.png"
+  },
+  "enemy/worm_ring_move_b": {
+   "frame": {
+    "x": 1584,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/worm_ring_move_b.png"
+  },
+  "enemy/worm_ring_rest": {
+   "frame": {
+    "x": 1650,
+    "y": 390,
+    "w": 64,
+    "h": 64
+   },
+   "source": "art/kenney_new-platformer-pack-1.1/Sprites/Enemies/Default/worm_ring_rest.png"
+  },
+  "enemy2/wingMan3": {
+   "frame": {
+    "x": 1716,
+    "y": 390,
+    "w": 128,
+    "h": 60
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/wingMan3.png"
+  },
+  "enemy2/wingMan4": {
+   "frame": {
+    "x": 1846,
+    "y": 390,
+    "w": 128,
+    "h": 60
+   },
+   "source": "art/kenney_jumper-pack/PNG/Enemies/wingMan4.png"
+  }
+ }
+}
