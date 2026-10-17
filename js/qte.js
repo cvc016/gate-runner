@@ -36,11 +36,11 @@ function ring(S){ S.timeLimit=3.2*S.P.timeMul; const body=head(S.el,'在圈上�
   const w=0.18*S.P.judgeMul; let r=1; const t0=performance.now();
   S._tick=setInterval(()=>{ if(S.done) return clearInterval(S._tick); r=1-((performance.now()-t0)/(S.timeLimit*1000)); o.style.transform=`scale(${Math.max(0.05,r)})`; if(r<=0) S.finish(false); },16);
   body.onclick=()=>{ const ok=Math.abs(r-0.45)<=w; S.finish(ok); }; }
-function mash(S){ S.timeLimit=4*S.P.timeMul; const need=Math.round(18*(1+0.08*S.P.t)); const body=head(S.el,`連點！ ${need} 次`,S.P); body.className='qte-body mash';
+const MASH_TAPS=13; // v0.7.3：連點固定 13 下，所有關卡相同、不隨難度縮放、不會倒退
+function mash(S){ S.timeLimit=4; const need=MASH_TAPS; const body=head(S.el,`連點 ${need} 下！`,S.P); body.className='qte-body mash';
   const meter=document.createElement('div'); meter.className='mash-m'; const fill=document.createElement('i'); meter.appendChild(fill); body.appendChild(meter);
-  const btn=document.createElement('button'); btn.textContent='連點！'; body.appendChild(btn); let n=0, drain=2.5+0.3*S.P.t;
-  S._tick=setInterval(()=>{ if(S.done) return clearInterval(S._tick); n=Math.max(0,n-drain*0.05); fill.style.height=(100*n/need)+'%'; },50);
-  btn.onclick=()=>{ n++; fill.style.height=(100*n/need)+'%'; if(n>=need) S.finish(true); }; }
+  const btn=document.createElement('button'); btn.textContent=`點！ 0/${need}`; body.appendChild(btn); let n=0;
+  btn.onclick=()=>{ if(S.done) return; n++; fill.style.height=(100*n/need)+'%'; btn.textContent=`點！ ${n}/${need}`; if(n>=need) S.finish(true); }; }
 function swipe(S){ const n=4+Math.floor(S.P.t/3); S.timeLimit=n*0.85*S.P.timeMul; const dirs=['U','D','L','R'], map={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]}, glyph={U:'↑',D:'↓',L:'←',R:'→'};
   const seq=[]; for(let i=0;i<n;i++) seq.push(dirs[(Math.random()*4)|0]);
   const body=head(S.el,'依序滑動',S.P); body.className='qte-body swipe'; body.innerHTML=seq.map((d,i)=>`<span class=ar data-i=${i}>${glyph[d]}</span>`).join('');
@@ -71,6 +71,6 @@ function charge(S){ S.timeLimit=2.8*S.P.timeMul; const body=head(S.el,'綠區鬆
   const down=e=>{ e.preventDefault(); hold=true; }; const up=e=>{ e.preventDefault(); if(!hold) return; hold=false; S.finish(p>=g0&&p<=g0+gw); };
   btn.addEventListener('touchstart',down,{passive:false}); btn.addEventListener('touchend',up); btn.addEventListener('mousedown',down); btn.addEventListener('mouseup',up); }
 function wait(ms){ return new Promise(r=>setTimeout(r,ms)); }
-const QTE={KINDS,tierOf,params,pick,make};
+const QTE={MASH_TAPS,KINDS,tierOf,params,pick,make};
 if(typeof module!=='undefined') module.exports=QTE; else root.QTE=QTE;
 })(this);

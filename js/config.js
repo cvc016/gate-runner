@@ -132,7 +132,8 @@ const CONFIG = {
     restPos5: 0.85, enemyWallExp: 0.5,
     zombieHpMul: 1.3, bossHpMul: 1.4, bossHpMulEarly: [1.2,1.2,1.2],
     firstHordeAdd: 10, lastHordeMin: 50, lastWaveDur: 12, lastWaveHpEarly: [0.6,0.7,0.8],
-    mulGate: { value: 2, capEarly: 2, capHard: 1, capEarlyAfter100: 3 }, plusGate: [8, 30],
+    hpMul073: 1.1, hpMul073Early: [1.05,1.05,1.05], zombieSpeedMul: 1.12, // v0.7.3：一般殭屍／Boss HP ×1.1（L1–3 ×1.05、含無盡）；基礎走速 ×1.12（各怪種相對比例不變）
+    mulGate: { value: 2, pOne: 0.7, pTwo: 0.25, pOneLate: 0.45, endlessTwo: 0.4 }, plusGate: [9, 33], // v0.7.3：乘法門約減半（只有 ×2），+ 門 8–30 → 9–33 小幅補償
     fx:{ atk:0.12, rate:0.08, armor:0.975, start:4, gate:0.08, boss:0.10, crit:0.03 }, gateExp:0.7, gateX:2.2, // v0.7.1：升級效果加倍＋HP 掛鉤建議配點輸出（QA：v0.7.0 建議配點全勝、不升級 L50 仍 50%）
     stoneGate: { from:11, tapsA:3, tapsStep:20, tapsMax:10, hardFrom:151, hardChance:0.15, hardExtra:3,
       hitExpand:1.4, hitMinPx:88, tapMaxMs:280, tapSlopPx:14, tapMinGapMs:60, tapRange:[8,40],

@@ -62,7 +62,7 @@ const CAT={
   ult:{icon:'🌟',name:'終極技能',line:'集齊條件觸發全螢幕攻擊，冷卻後自動施放。',cat:'能力'},
   q_grid_1to9:{icon:'🔢',name:'QTE：依序點 1→9',line:'限時內按 1 到 9 的順序點完。',cat:'QTE'},
   q_shrink_ring:{icon:'⭕',name:'QTE：縮圈',line:'外圈縮到與內圈重疊時點擊。',cat:'QTE'},
-  q_mash_meter:{icon:'👆',name:'QTE：狂點',line:'快速連點把量表填滿。',cat:'QTE'},
+  q_mash_meter:{icon:'👆',name:'QTE：狂點',line:'在時限內連點 13 下就成功！',cat:'QTE'},
   q_swipe_arrows:{icon:'➡️',name:'QTE：滑動方向',line:'照箭頭方向依序滑動。',cat:'QTE'},
   q_memory_colors:{icon:'🎨',name:'QTE：顏色記憶',line:'記住閃爍順序，再照順序點。',cat:'QTE'},
   q_find_impostor:{icon:'🔍',name:'QTE：找不同',line:'找出唯一不一樣的那個。',cat:'QTE'},

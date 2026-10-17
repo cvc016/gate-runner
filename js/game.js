@@ -37,7 +37,7 @@ function startEndless(noAnim){ if(!noAnim&&!NOANIM()) return wipe(()=>startEndle
 function endlessWave(h){ const E_=CONFIG.v6.endless, n=h.n||1; const EV7=CONFIG.v7.endless, cnt=Math.round(Math.min(EV7.waveMax,EV7.waveA+EV7.waveB*n)); /* v0.7 §6.3：min(90, 12+1.5n) */ const gr_=n>E_.lateFrom?Math.pow(E_.hpGrow,E_.lateFrom)*Math.pow(E_.hpGrowLate,n-E_.lateFrom):Math.pow(E_.hpGrow,n); /* v0.6.2：第 20 波後 HP 每波 ×1.09、殭屍上限 90 */ const dur=h.duration;
   h.ke=h.count=cnt; h.rate=cnt/dur; G.dmgW=0; G.hwT0=G.t;
   const sd_=Combat.simDps(Math.max(1,G.army),G.st,G.lv.tier)*E_.simFrac*Math.min(1,E_.simRamp0+E_.simRampN*n); /* v0.6.1：以理論 DPS 當下限，避免實測 DPS 受限於殭屍血量而自我鎖死 */
-  G.zHpWave=Math.max(Endless.zombieHp(n), Math.max(G.eDps||0,sd_)*(dur+3)*E_.hpOverDps*gr_/cnt)*(G.eHpAdj||1);
+  G.zHpWave=Math.max(Endless.zombieHp(n), Math.max(G.eDps||0,sd_)*(dur+3)*E_.hpOverDps*gr_/cnt*CONFIG.v7.hpMul073)*(G.eHpAdj||1); /* v0.7.3 ×1.1 */
   G.eContact=Math.max(Math.pow(CONFIG.v7.endless.armyG,n), Math.max(1,G.army)*Math.min(E_.threatCap,E_.threatFrac*Math.pow(E_.threatGrow,n))/cnt); /* v0.7：接觸扣兵下限 ×1.04^n */ /* v0.6.3：全隊漏光最多扣 threatCap（50%）兵力 */
   G.hwArmy0=Math.max(1,G.army); G.hLoss=0;
   G.chargeQ=n>=E_.chargerFrom?Math.max(E_.chargerMin,Math.round(cnt*E_.chargerFrac)):0; G.chargeN=0; G.hwCnt=cnt; G.hLossC=0; G.chargeHit=0; G.eChargeDmg=G.chargeQ?G.hwArmy0*((G.eLossEma!=null&&G.eLossEma<E_.chargeFullBelow)?E_.hordeLossTarget:E_.hordeLossTarget-E_.regTarget)*(G.eChargeK||1)/G.chargeQ:0; /* v0.6.4：一般殭屍幾乎不扣兵時，衝鋒屍目標拉到完整 12% */ } /* v0.6.4：第 6 波起每波固定有一批護盾衝鋒屍，一定會撞到隊伍 */
@@ -231,7 +231,7 @@ function spawnZ(z,x,w,baseSp,type){ type=type||(G.forceT&&rnd()<0.5?G.forceT[Mat
   const hp=w*((G.endless&&G.state==='horde'&&G.zHpWave)||G.zHp||Stage.zombieHp(G.level))*(T.hp||1)*((!G.endless&&G.state==='horde'&&G.hw&&G.hw.hpMul)||1); /* v0.7：第 1–3 關末波 HP 打折 */ // v0.6：基本殭屍 = 基礎槍 zombieHits 發
   if(G.units.length>=(G.hw&&G.hw.big?CONFIG.horde.maxVisibleBig:CONFIG.horde.maxVisible)*1.15) return null;
   const hitR=T.fat?CONFIG.hit.fat:T.sp>1.2?CONFIG.hit.runner:CONFIG.hit.mob;
-  const u={id:(G.uid=(G.uid||0)+1),z,x,w,type,hp,maxHp:hp,sp:baseSp*T.sp*(1-(G.st.slowZ||0)*0.5),ph:rnd()*6,big:1,hitR}; G.units.push(u); return u; }
+  const u={id:(G.uid=(G.uid||0)+1),z,x,w,type,hp,maxHp:hp,sp:baseSp*(CONFIG.v7.zombieSpeedMul||1)*T.sp*(1-(G.st.slowZ||0)*0.5),ph:rnd()*6,big:1,hitR}; G.units.push(u); return u; }
 function dmgZ(u,d,col,gun,st){ if(u.dead) return; if(u.charger){ u.hitT=0.06; if(!(u.shT>G.t)){ u.shT=G.t+0.6; float('🛡','#ffd23f',u.z,u.x); } return; } /* v0.6.4：衝鋒屍護盾：免疫傷害與控場 */ const s=G.st;
   d*=sgDmgMul(); if(gun&&u.type==='shield'&&u.z>G.z) d*=0.5; if(gun&&u.type==='armored') d*=0.6; if(u.buffT>0) d*=0.7; // 精英光環減傷
   let crit=false; if(gun&&rnd()<s.crit){ d*=s.critMul; crit=true; }
@@ -377,7 +377,7 @@ function update(dt){
       if(p.type==='elite'){ G.elites++; G.army+=Math.round(5*Combat.tierM(L.tier)); banner('⭐ 精英巨人加入！','#ffd23f'); } else { G.boost*=1.5; banner('🔫 武器升級：射速 x1.5','#7df9ff'); } }
     if(s.thunder>0){ G.thT-=dt; if(G.thT<=0){ G.thT=3/s.thunder; const e=L.enemies.find(e=>e.count>0&&e.z-G.z<45); if(e){e.count*=0.6; G.shots.push({z:e.z,x:e.x,l:.3,th:1}); synFx('storm'); burst(e.z,e.x,'#fffb7a',20,2);} } }
     { const hw=(L.hordes||[]).find(h=>!h.done&&G.z>=h.z); if(hw){ hw.done=1; if(G.endless) endlessWave(hw); G.hw=hw; G.state='horde'; G.hordeT=hw.duration; G.spawnAcc=0; G.spawned=0; G.killed=0; G.gunAcc=0; G.goldN=0; banner(hw.big?`🧟🧟 第 ${hw.wave}/${hw.waves} 波：屍海來襲！`:`🧟 第 ${hw.wave}/${hw.waves} 波殭屍潮`,'#ff6a3c'); SFX.warn(); SFX.zombie(); if(hw.big) shake(14); if(!tutTip('t_horde')) tip(hw.big?'sea':'horde'); else Tips.mark(localStorage,'horde'); } }
-    if(G.z>=L.boss.z-6){ if(G.endless&&G.eDps&&!L.boss.eScaled){ L.boss.eScaled=1; L.boss.hp=Math.max(L.boss.hp,Math.round(G.eDps*(L.boss.boss?CONFIG.v6.endless.bossSecFinal:CONFIG.v6.endless.bossSecMini)*Math.pow(1.03,G.E.wave))); } G.state='boss'; L.boss.z=G.z+13; G.B=Combat.bossInit(L.boss,G.army,s); G.B.noAbstract=1; if(G.sgBreaker){ G.sgBreaker=0; G.B.lockI=1; banner('🔨 破甲：第一層護盾已破！','#c0c8d0'); } /* v0.7 破甲門 */ if(G.endless&&L.boss.boss){ G.B.slamEvery=CONFIG.bossSlamEvery*CONFIG.v6.endless.finalSlamMul; G.B.slamT=G.B.slamEvery; } /* v0.6.2：無盡終極魔王大招間隔 +25% */ G.B.stage=G.level; G.B.ultIdx=0;
+    if(G.z>=L.boss.z-6){ if(G.endless&&G.eDps&&!L.boss.eScaled){ L.boss.eScaled=1; L.boss.hp=Math.max(L.boss.hp,Math.round(G.eDps*(L.boss.boss?CONFIG.v6.endless.bossSecFinal:CONFIG.v6.endless.bossSecMini)*Math.pow(1.03,G.E.wave)*CONFIG.v7.hpMul073)); } G.state='boss'; L.boss.z=G.z+13; G.B=Combat.bossInit(L.boss,G.army,s); G.B.noAbstract=1; if(G.sgBreaker){ G.sgBreaker=0; G.B.lockI=1; banner('🔨 破甲：第一層護盾已破！','#c0c8d0'); } /* v0.7 破甲門 */ if(G.endless&&L.boss.boss){ G.B.slamEvery=CONFIG.bossSlamEvery*CONFIG.v6.endless.finalSlamMul; G.B.slamT=G.B.slamEvery; } /* v0.6.2：無盡終極魔王大招間隔 +25% */ G.B.stage=G.level; G.B.ultIdx=0;
       // 進入前已打掉的血量保留
       if(L.boss.preDmg){ G.B.hp=Math.max(1,G.B.max-L.boss.preDmg); }
       G.army=G.B.army; G.dmgAcc=0; synFx('dragon');

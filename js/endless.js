@@ -4,7 +4,7 @@ const CONFIG=root.CONFIG||require('./config.js'), Stage=root.Stage||require('./s
 const E=()=>CONFIG.v6.endless; const KEY='gr_endless_v1';
 // 第 n 波（從 1 起算）
 function hits(n){ const e=E(), V7=CONFIG.v7&&CONFIG.v7.endless; if(V7) return V7.hitsA*Math.pow(V7.hitsG,Math.max(1,n)); /* v0.7 §6.3：指數成長 1.6×1.06^n */ return e.hitsA+e.hitsB*Math.pow(Math.max(1,n),e.hitsExp); }
-function zombieHp(n){ return CONFIG.gunDmg*hits(n); }                    // 無盡模式固定在階層 0 的數值單位
+function zombieHp(n){ return CONFIG.gunDmg*hits(n)*((CONFIG.v7&&CONFIG.v7.hpMul073)||1); } /* v0.7.3 ×1.1 */                    // 無盡模式固定在階層 0 的數值單位
 function waveCount(n){ const e=E(), V7=CONFIG.v7&&CONFIG.v7.endless; if(V7) return Math.round(Math.min(V7.waveMax,V7.waveA+V7.waveB*n)); return Math.round(e.waveA*(1+e.waveB*n)); }
 function waveDur(n){ return Math.min(11,6+Math.floor(n/10)); }
 function miniEq(n){ const e=E(), V7=CONFIG.v7&&CONFIG.v7.endless; if(V7) return V7.miniEqA*(1+V7.miniEqB*n); return e.miniEqA*(1+e.miniEqB*n); }
@@ -14,7 +14,7 @@ function bossKind(segIdx){ const e=E(); return ((segIdx+1)*e.miniEvery)%e.finalE
 function typeStage(n){ return Math.max(1,Math.min(1000,n*4)); }
 const SLOTS=['row','row','horde','row','enemy','horde','obs','row','horde','row','enemy','horde','row','obs','horde','row'];
 function buildSegment(seed, segIdx, lanes){ const e=E(); const n0=segIdx*e.miniEvery; const kind=bossKind(segIdx); const vs=1+Math.min(9,Math.floor(segIdx/2)); // 虛擬關卡：路障/移動門隨段數增加（階層 0）
-  const L=Stage.generateStage(RNG.hash(seed,9000+segIdx),vs,lanes||2,kind,{slots:SLOTS,sections:2});
+  const xr=RNG.mulberry32(RNG.hash(seed,9100+segIdx))(); const L=Stage.generateStage(RNG.hash(seed,9000+segIdx),vs,lanes||2,kind,{slots:SLOTS,sections:2,xQuota:xr<((CONFIG.v7&&CONFIG.v7.mulGate.endlessTwo)||0.4)?2:1}); /* v0.7.3：無盡每段乘法門最多 1–2 個 */
   L.hordes.forEach((h,i)=>{ const n=n0+i+1; h.n=n; h.ke=h.count=waveCount(n); h.duration=waveDur(n); h.rate=h.ke/h.duration; h.wave=i+1; h.waves=L.hordes.length; h.big=i===L.hordes.length-1&&kind==='boss'; });
   L.packs=[]; const nB=n0+e.miniEvery; const eq=miniEq(nB)*(kind==='boss'?(CONFIG.v7?CONFIG.v7.endless.finalMul:e.finalMul):1); const V=CONFIG.v6.boss, fk=kind==='boss'?'final':'mini';
   Object.assign(L.boss,{hp:Math.round(zombieHp(nB)*eq*(CONFIG.v7?1:((CONFIG.bossHpBoost||{})[kind==='boss'?'endlessBoss':'endlessMini']||1))) /* v0.7：無盡 Boss 不再額外 ×2／×3 */,eq,atkFrac:V.atkFrac[fk],preCap:V.preCap[fk],summonN:V.lockSummon[fk],summonHp:zombieHp(nB)*V.summonHpMul,summonKE:V.lockSummon[fk],name:kind==='boss'?'無盡魔王':'無盡守衛',calibA:60});

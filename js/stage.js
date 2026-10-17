@@ -17,7 +17,7 @@ const ELEM=['fire','ice','thunder'];
 // v0.6（DESIGN-v6 §1）：殭屍血量以「基礎槍幾發」定義；每波固定隻數（擊殺當量），整關累計波次由少到多
 function zombieHp(stage,forBoss){ const {tier,s}=info(stage); const V=CONFIG.v6, V7=CONFIG.v7; const Up=root.Upgrades||require('./upgrades.js');
   /* v0.7：v6 公式 × 1.3 × W(L)（Boss 走 combat.bossV6 再 ×1.4）；lateZombieHp、t0Late.hp 停用 */
-  return CONFIG.gunDmg*Math.pow(CONFIG.tierPlayerScale,tier)*V.zombieHits[s-1]*(1+V.hitsTierGrowth*tier)*Up.wall(stage)*(forBoss?1:V7.zombieHpMul); }
+  return CONFIG.gunDmg*Math.pow(CONFIG.tierPlayerScale,tier)*V.zombieHits[s-1]*(1+V.hitsTierGrowth*tier)*Up.wall(stage)*(forBoss?1:V7.zombieHpMul)*(stage<=V7.hpMul073Early.length?V7.hpMul073Early[stage-1]:V7.hpMul073); } /* v0.7.3 HP ×1.1（L1–3 ×1.05），Boss 也經由這裡 */
 function waveCount(stage, wi){ const {tier,s}=info(stage); const V=CONFIG.v6; const e=stage<=V.earlyMul.length?V.earlyMul[stage-1]:1;
   /* v0.7：§4.2 waveBase × (1+0.03 tier) × waveRamp × earlyMul × (pos5 補給關 0.85)；t0Late.wave 停用 */
   return Math.max(1,Math.round(V.waveBase[s-1]*(1+V.waveTierGrowth*tier)*V.waveRamp[Math.min(wi||0,V.waveRamp.length-1)]*e*(s===5?CONFIG.v7.restPos5:1))); }
@@ -70,7 +70,7 @@ function generateStage(seed, stage, lanes, kindOverride, opt){ opt=opt||{}; cons
     if(k==='row'&&r()<CONFIG.pickupChance*0.3) pickups.push({z:z+9,x:r()*1.2-0.6,type:r()<0.5?'elite':'weapon'});
   }
   // v0.7：乘法門稀有——本段最多 opt.xQuota 個（由 Level.build 依整關上限分配），超過的改成加法門（獨立亂數，不影響其他配置）
-  if(opt.xQuota!=null&&!opt.slots){ let left=opt.xQuota; const r2=RNG.mulberry32(RNG.hash(seed,stage*31+7)); const rs=rows.slice().sort((a,b)=>a.z-b.z);
+  if(opt.xQuota!=null){ let left=opt.xQuota; const r2=RNG.mulberry32(RNG.hash(seed,stage*31+7)); const rs=rows.slice().sort((a,b)=>a.z-b.z);
     for(const row of rs){ let used=false; for(const arr of [row.gates,row.alt]){ if(!arr) continue; arr.forEach((g,i)=>{ if(g.op!=='x') return; if(left>0&&!used){ used=true; g.v=CONFIG.v7.mulGate.value; return; } arr[i]={op:'+',v:Math.round((CONFIG.v7.plusGate[0]+r2()*(CONFIG.v7.plusGate[1]-CONFIG.v7.plusGate[0]))*m)}; }); } if(used) left--; } }
   // 跑道上與閘門混在一起的殭屍群（每兩排閘門之間一群），數量取自本關屍潮強度
   const packs=[]; if(horde){ const rs=rows.slice().sort((a,b)=>a.z-b.z); for(let i=0;i+1<rs.length;i++){ const zz=(rs[i].z+rs[i+1].z)/2; if(hordes.some(h=>Math.abs(zz-h.z)<8)) continue; packs.push({z:zz, n:Math.max(1,Math.round(waveCount(stage,0)*CONFIG.horde.packFrac*(0.7+0.6*((i*7919)%10)/10)))}); } }
