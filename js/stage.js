@@ -10,7 +10,7 @@ const THEMES=['grass','desert','snow','lava','neon'];
 function theme(stage){ return THEMES[info(stage).tier%THEMES.length]; }
 function genGate(r, bad, tier){
   const m=Math.pow(CONFIG.tierPlayerScale,tier);
-  if(!bad){ const PG=CONFIG.v7.plusGate; return r()<0.7 ? {op:'+',v:Math.round((PG[0]+r()*(PG[1]-PG[0]))*m)} : {op:'x',v:r()<0.75?2:CONFIG.v7.mulGate.value}; } /* v0.7：+ 門 8–30；乘法門只有 ×2（限量在 Level.build） */
+  if(!bad){ const PG=CONFIG.v7.plusGate, pm=(GH&&GH.plus)||1; return r()<0.7 ? {op:'+',v:Math.max(1,Math.round((PG[0]+r()*(PG[1]-PG[0]))*m*pm))} : {op:'x',v:r()<0.75?2:CONFIG.v7.mulGate.value}; } /* v0.7：+ 門 8–30；乘法門只有 ×2（限量在 Level.build） */
   if(GH){ const x=r(); if(x<GH.div3) return {op:'÷',v:3}; if(x<GH.div3+GH.div2) return {op:'÷',v:2}; return {op:'-',v:Math.round((GH.minus[0]+r()*(GH.minus[1]-GH.minus[0]))*m)}; } /* v0.7.4 困難化：負面門更常見、更痛（gateFloor 仍保底 40%） */
   return r()<0.7 ? {op:'-',v:Math.round((5+r()*15)*m)} : {op:'÷',v:2};
 }
@@ -55,7 +55,7 @@ function generateStage(seed, stage, lanes, kindOverride, opt){ opt=opt||{}; cons
     else if(k==='obs'){ const OU=(CONFIG.v7&&CONFIG.v7.unlocks&&!opt.slots)?CONFIG.v7.unlocks.obstacles:null; let types=s<6?['saw','pit']:['saw','hammer','pit','push']; if(OU){ types=types.filter(t=>stage>=(OU[t]||1)); if(!types.length) types=['saw']; } /* v0.7 開放表：鋸片 3、陷坑 4、巨鎚 6、推板 8 */ const type=types[Math.floor(r()*types.length)];
       obstacles.push({z,type,x:r()<0.5?-0.5:0.5,w:type==='push'?0.9:0.55,phase:r()*6.28,speed:0.8+r()*0.8}); }
     else if(k==='horde'){ z+=4; const wi=hordes.length; const gwi=W0+wi, dur=waveDur(gwi), ke=Math.max(1,Math.round(waveCount(stage,gwi)*(opt.slots?1:1))); /* v0.7：seg0HordeMul／stageHordeMul 停用（§4.2） */ /* v0.6.2：個別關卡屍潮倍率（L10 -10%） */ // v0.6：整關累計波次，由少到多
-      const V7=CONFIG.v7||{}; let ke2=ke; if(!opt.slots&&!W0&&wi===0&&V7.firstHordeAdd) ke2+=V7.firstHordeAdd; /* v0.7：每關第一波 +10 隻 */ if(!opt.slots&&lastSeg&&wi===nW-1&&V7.lastHordeMin) ke2=Math.max(ke2,V7.lastHordeMin); /* v0.7：每關最後一波至少 50 隻 */
+      const V7=CONFIG.v7||{}; let ke2=ke; if(!opt.slots&&GH&&GH.horde) ke2=Math.max(1,Math.round(ke2*GH.horde)); /* v0.7.6：分段屍潮數量倍率 */ if(!opt.slots&&!W0&&wi===0&&V7.firstHordeAdd) ke2+=V7.firstHordeAdd; /* v0.7：每關第一波 +10 隻 */ if(!opt.slots&&lastSeg&&wi===nW-1&&V7.lastHordeMin) ke2=Math.max(ke2,V7.lastHordeMin); /* v0.7：每關最後一波至少 50 隻 */
       const isLast=!opt.slots&&lastSeg&&wi===nW-1, dur2=isLast?Math.max(dur,V7.lastWaveDur||0):dur; const h={z,duration:dur2,ke:ke2,count:ke2,rate:ke2/dur2,wave:wi+1,waves:nW,gwi,big:wi===nW-1&&nW>2}; if(isLast&&stage<=(V7.lastWaveHpEarly||[]).length) h.hpMul=V7.lastWaveHpEarly[stage-1]; /* v0.7：末波至少 12 秒；第 1–3 關末波 HP 打折 */ hordes.push(h); if(!horde) horde=h; z+=8; }
     else if(k==='chest'){ chest={z,x:r()*1.2-0.6,hp:CONFIG.chestHp}; }
     else { const gates=[]; let hasGood=false;
@@ -81,6 +81,6 @@ function generateStage(seed, stage, lanes, kindOverride, opt){ opt=opt||{}; cons
   const boss = {z:z+30, hp:Math.round(P*CONFIG.bossHpMul[kind]), atk:P*CONFIG.bossAtkMul[kind], boss:kind==='boss', mini:kind==='mini', kind};
   return {stage,tier,s,theme:theme(stage),rows,enemies,coins,obstacles,pickups,horde,hordes,packs,chest,boss,length:z+30};
 }
-const Stage={zombieHp,waveCount,waveDur,enemyMul,hordeKE,spawnRate,obstacleCount,tierGrowth,info,startArmy,enemyPower,difficultyRatio,generateStage,theme,THEMES};
+const Stage={hardOf,zombieHp,waveCount,waveDur,enemyMul,hordeKE,spawnRate,obstacleCount,tierGrowth,info,startArmy,enemyPower,difficultyRatio,generateStage,theme,THEMES};
 if (typeof module!=='undefined') module.exports=Stage; else root.Stage=Stage;
 })(this);

@@ -195,7 +195,7 @@ function shoot(tz,tx,col){ const o=crowdPos(); FX.bullet(o.x,o.z,tx,tz,col||'#ff
 
 // ---- v0.6 接觸傷害：每 1 KE 碰到隊伍 = contactSoldiers × 階層倍率 名士兵；明顯回饋（士兵彈飛、紅閃、-N）----
 const CONTACT_Z=0.9;
-function contactLoss(u,T){ const V=CONFIG.v6; const c=u.cos?V.contact.summon:(V.contact[u.type]!==undefined?V.contact[u.type]:1); if(u.charger) return G.eChargeDmg*(1-Math.min(0.8,G.st.armor||0)); if(G.endless&&G.eContact&&G.state==='horde') return u.w*c*G.eContact*(1-Math.min(0.8,G.st.armor||0)); return u.w*c*Math.min(Combat.tierM(G.lv.tier),Math.max(1,0.05*G.army))*(1-Math.min(0.8,G.st.armor||0)); } /* v0.6.1：兵少時階層倍率不放大接觸 */
+function contactLoss(u,T){ const V=CONFIG.v6; const c=u.cos?V.contact.summon:(V.contact[u.type]!==undefined?V.contact[u.type]:1); if(u.charger) return G.eChargeDmg*(1-Math.min(0.8,G.st.armor||0)); if(G.endless&&G.eContact&&G.state==='horde') return u.w*c*G.eContact*(1-Math.min(0.8,G.st.armor||0)); return u.w*c*Math.min(Combat.tierM(G.lv.tier),Math.max(1,0.05*G.army))*(1-Math.min(0.8,G.st.armor||0))*(((Stage.hardOf&&Stage.hardOf(G.level))||{}).contact||1); } /* v0.7.6：分段接觸傷害倍率 */ /* v0.6.1：兵少時階層倍率不放大接觸 */
 // 每 0.25 秒最多扣 max(2×階層倍率, 6% 兵力)；超過的接觸仍消失但不扣（DESIGN-v6 §2.2）
 function contactCap(){ const V=CONFIG.v6; if(G.t-(G.capT0||-9)>=V.contactTick){ G.capT0=G.t; G.capUsed=0; } return Math.max(V.contactCapMin*Math.min(Combat.tierM(G.lv.tier),Math.max(1,0.05*G.army)),G.army*V.contactCapFrac)-(G.capUsed||0); }
 function contactHit(u,T){ if(sgOn('invis')&&!u.charger){ if(rnd()<0.2) float('❓','#d9c2ff',G.z+1.2,u.x); return; } /* v0.7 隱形門 */ if(G.shields>0&&T.contact>=2){ G.shields--; float('護盾!','#6cf',G.z+1.5,u.x); return; }

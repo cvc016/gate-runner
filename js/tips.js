@@ -45,7 +45,6 @@ const CAT={
   sg_nuke:{icon:'☢️',name:'爆破門',line:'全畫面殭屍重創！',cat:'特殊門'},
   sg_slowmo:{icon:'⏳',name:'時緩門',line:'殭屍慢動作 4 秒！',cat:'特殊門'},
   sg_fog:{icon:'🌫',name:'迷霧門',line:'迷霧：6 秒內看不遠。',cat:'特殊門'},
-  sg_twin:{icon:'✨',name:'雙倍門',line:'下一扇加法門數值 ×2！',cat:'特殊門'},
   sg_heal:{icon:'💚',name:'治療門',line:'找回 25% 損失的兵力！',cat:'特殊門'},
   sg_reverse:{icon:'🔄',name:'反轉門',line:'反轉：4 秒內左右顛倒！',cat:'特殊門'},
   sg_card:{icon:'🃏',name:'卡片門',line:'立刻多選一張能力卡！',cat:'特殊門'},
