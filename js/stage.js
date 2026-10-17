@@ -11,13 +11,16 @@ function theme(stage){ return THEMES[info(stage).tier%THEMES.length]; }
 function genGate(r, bad, tier){
   const m=Math.pow(CONFIG.tierPlayerScale,tier);
   if(!bad){ const PG=CONFIG.v7.plusGate; return r()<0.7 ? {op:'+',v:Math.round((PG[0]+r()*(PG[1]-PG[0]))*m)} : {op:'x',v:r()<0.75?2:CONFIG.v7.mulGate.value}; } /* v0.7：+ 門 8–30；乘法門只有 ×2（限量在 Level.build） */
+  if(GH){ const x=r(); if(x<GH.div3) return {op:'÷',v:3}; if(x<GH.div3+GH.div2) return {op:'÷',v:2}; return {op:'-',v:Math.round((GH.minus[0]+r()*(GH.minus[1]-GH.minus[0]))*m)}; } /* v0.7.4 困難化：負面門更常見、更痛（gateFloor 仍保底 40%） */
   return r()<0.7 ? {op:'-',v:Math.round((5+r()*15)*m)} : {op:'÷',v:2};
 }
+let GH=null;
+function hardOf(stage){ const H=CONFIG.v7&&CONFIG.v7.hard; if(!H) return null; for(const b of H.bands) if(stage<=b.to) return b; return H.bands[H.bands.length-1]; }
 const ELEM=['fire','ice','thunder'];
 // v0.6（DESIGN-v6 §1）：殭屍血量以「基礎槍幾發」定義；每波固定隻數（擊殺當量），整關累計波次由少到多
 function zombieHp(stage,forBoss){ const {tier,s}=info(stage); const V=CONFIG.v6, V7=CONFIG.v7; const Up=root.Upgrades||require('./upgrades.js');
   /* v0.7：v6 公式 × 1.3 × W(L)（Boss 走 combat.bossV6 再 ×1.4）；lateZombieHp、t0Late.hp 停用 */
-  return CONFIG.gunDmg*Math.pow(CONFIG.tierPlayerScale,tier)*V.zombieHits[s-1]*(1+V.hitsTierGrowth*tier)*Up.wall(stage)*(forBoss?1:V7.zombieHpMul)*(stage<=V7.hpMul073Early.length?V7.hpMul073Early[stage-1]:V7.hpMul073); } /* v0.7.3 HP ×1.1（L1–3 ×1.05），Boss 也經由這裡 */
+  return CONFIG.gunDmg*Math.pow(CONFIG.tierPlayerScale,tier)*V.zombieHits[s-1]*(1+V.hitsTierGrowth*tier)*Up.wall(stage)*(forBoss?1:V7.zombieHpMul)*(stage<=V7.hpMul073Early.length?V7.hpMul073Early[stage-1]:V7.hpMul073)*((hardOf(stage)||{}).hp||1); } /* v0.7.4：分段 HP 倍率 */ /* v0.7.3 HP ×1.1（L1–3 ×1.05），Boss 也經由這裡 */
 function waveCount(stage, wi){ const {tier,s}=info(stage); const V=CONFIG.v6; const e=stage<=V.earlyMul.length?V.earlyMul[stage-1]:1;
   /* v0.7：§4.2 waveBase × (1+0.03 tier) × waveRamp × earlyMul × (pos5 補給關 0.85)；t0Late.wave 停用 */
   return Math.max(1,Math.round(V.waveBase[s-1]*(1+V.waveTierGrowth*tier)*V.waveRamp[Math.min(wi||0,V.waveRamp.length-1)]*e*(s===5?CONFIG.v7.restPos5:1))); }
@@ -34,7 +37,7 @@ function generateStage(seed, stage, lanes, kindOverride, opt){ opt=opt||{}; cons
   let oN = CONFIG.obstacles[s-1] + Math.floor(tier/5)*(CONFIG.obsPer5Tier||1);
   (CONFIG.obsLateAt||[]).forEach((at,i)=>{ if(stage>=at) oN+=CONFIG.obsLateAdd[i]; }); oN=Math.min(CONFIG.obsCap||14,oN); // v0.5：後期路障更多
   const hasHorde = s>=CONFIG.horde.from && CONFIG.horde.spawnRate[s-1]>0;
-  const P = enemyPower(stage); const bad=CONFIG.badGateChance[s-1], m=Math.pow(CONFIG.tierPlayerScale,tier);
+  const P = enemyPower(stage); GH=opt.slots?null:hardOf(stage); const bad=GH&&GH.bad!=null?Math.max(GH.bad,CONFIG.badGateChance[s-1]):CONFIG.badGateChance[s-1], m=Math.pow(CONFIG.tierPlayerScale,tier);
   // 決定每個格子放什麼
   const slots=[]; slots.push('row','row'); for(let i=2;i<rowsN;i++) slots.push('row'); for(let i=0;i<gN;i++) slots.push('enemy'); for(let i=0;i<oN;i++) slots.push('obs');
   if(s!==5&&s!==10) slots.push('chest');
@@ -70,8 +73,8 @@ function generateStage(seed, stage, lanes, kindOverride, opt){ opt=opt||{}; cons
     if(k==='row'&&r()<CONFIG.pickupChance*0.3) pickups.push({z:z+9,x:r()*1.2-0.6,type:r()<0.5?'elite':'weapon'});
   }
   // v0.7：乘法門稀有——本段最多 opt.xQuota 個（由 Level.build 依整關上限分配），超過的改成加法門（獨立亂數，不影響其他配置）
-  if(opt.xQuota!=null){ let left=opt.xQuota; const r2=RNG.mulberry32(RNG.hash(seed,stage*31+7)); const rs=rows.slice().sort((a,b)=>a.z-b.z);
-    for(const row of rs){ let used=false; for(const arr of [row.gates,row.alt]){ if(!arr) continue; arr.forEach((g,i)=>{ if(g.op!=='x') return; if(left>0&&!used){ used=true; g.v=CONFIG.v7.mulGate.value; return; } arr[i]={op:'+',v:Math.round((CONFIG.v7.plusGate[0]+r2()*(CONFIG.v7.plusGate[1]-CONFIG.v7.plusGate[0]))*m)}; }); } if(used) left--; } }
+  { let left=opt.xQuota||0; /* v0.7.4：沒給配額 = 0 個（不再有不受限的乘法門） */ const r2=RNG.mulberry32(RNG.hash(seed,stage*31+7)); const rs=rows.slice().sort((a,b)=>a.z-b.z);
+    for(const row of rs){ let used=false; for(const arr of [row.gates,row.alt]){ if(!arr) continue; arr.forEach((g,i)=>{ if(g.op!=='x') return; if(left>0&&!used){ used=true; g.v=opt.xVal||CONFIG.v7.mulGate.value; return; } arr[i]={op:'+',v:Math.round((CONFIG.v7.plusGate[0]+r2()*(CONFIG.v7.plusGate[1]-CONFIG.v7.plusGate[0]))*m)}; }); } if(used) left--; } }
   // 跑道上與閘門混在一起的殭屍群（每兩排閘門之間一群），數量取自本關屍潮強度
   const packs=[]; if(horde){ const rs=rows.slice().sort((a,b)=>a.z-b.z); for(let i=0;i+1<rs.length;i++){ const zz=(rs[i].z+rs[i+1].z)/2; if(hordes.some(h=>Math.abs(zz-h.z)<8)) continue; packs.push({z:zz, n:Math.max(1,Math.round(waveCount(stage,0)*CONFIG.horde.packFrac*(0.7+0.6*((i*7919)%10)/10)))}); } }
   const kind = kindOverride || (s===CONFIG.cycleLength?'boss': s===5?'mini':'normal');

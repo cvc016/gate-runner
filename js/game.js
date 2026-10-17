@@ -65,7 +65,7 @@ function renderEndlessMenu(){ const d=Endless.load(localStorage), ok=Endless.unl
   $('bEnGo').disabled=!ok; $('bEnGo').style.opacity=ok?1:0.5; show('endless'); }
 function startSegment(first){
   const st=Abil.computeStats(G.build,meta); G.st=st; if(G.endless&&(!G.segs[G.seg]||G.segs[G.seg].lanes!==st.lanes)) G.segs[G.seg]=Endless.buildSegment(G.seed,G.seg,st.lanes); let L=G.segs[G.seg]; G.zHp=L.zHp||null; G.gatesDone=0; G.cDebt=0; G.contactAcc=0;
-  if(!G.endless&&st.lanes!==L.lanes) L=G.segs[G.seg]=Object.assign(Combat.prepareStage(Stage,Abil,L.segSeed,L.level,st.lanes,{kind:L.boss.kind,entry:L.entry}),{seg:L.seg,segs:L.segs,level:L.level,entry:L.entry,lanes:st.lanes,segSeed:L.segSeed});
+  if(!G.endless&&st.lanes!==L.lanes) { const nSt=L.rows.filter(r=>r.stone).length, B=L.boss; L=G.segs[G.seg]=Object.assign(Combat.prepareStage(Stage,Abil,L.segSeed,L.level,st.lanes,L.prepOpt||{kind:L.boss.kind,entry:L.entry}),{seg:L.seg,segs:L.segs,level:L.level,entry:L.entry,lanes:st.lanes,segSeed:L.segSeed,prepOpt:L.prepOpt,waveOffset:L.waveOffset}); Object.assign(L.boss,{name:B.name,key:B.key,skill:B.skill,vi:B.vi}); if(nSt&&window.Special) Special.place([L],L.level,L.segSeed,nSt); } /* v0.7.4：第三車道重建段落時保留乘法門配額、末波設定、石頭門與 Boss 外觀（原本會變成不限量乘法門） */
   G.lv=L; G.th=THEME[G.lv.theme]; setTimeout(abBar,0);
   if(first){ G.army=Math.round(Stage.startArmy(G.level,st.startAdd)*st.startMulX); sgReset(); Object.assign(G,{xp:0,lvl:0,boost:1,elites:0}); } else G.army=Math.round(Math.max(1,G.army));
   G.army0=G.army; G.lastGateArmy=G.army; FX.clear(); SFX.bgm(true);
@@ -96,10 +96,11 @@ function abNumbers(a,lvl){ const w=Abil.WEAPONS[a.id]; if(a.id==='gunStream'||a.
   const cd=w.cd/Math.max(0.3,st.cdMul||1), n=Combat.weaponProj(st,a.id);
   const extra={fire:'，燃燒',ice:'，冰凍',thunder:'',nature:'，毒霧',arcane:'，追蹤'}[w.elem]||'';
   return `<small class=num>${VIS_ICON[w.vis]} 投射物 ×${n} · 每 ${cd.toFixed(1)} 秒${extra}</small>`; }
-function abPreview(a){ const w=Abil.WEAPONS[a.id]; const c=w?ELEM_COL[w.elem]:'#9ad'; return `<span class=pv style="--c:${c}">${abIcon(a.id)}</span>`; }
+function abPreview(a){ const w=Abil.WEAPONS[a.id]; const c=w?FX.wcol(a.id):'#9ad'; return `<span class=pv style="--c:${c}">${abIcon(a.id)}</span>`; }
+function wChip(id){ const c=FX.wcol(id); return `border:2px solid ${c};background:${c}55;box-shadow:inset 0 -3px 0 ${c}`; } /* v0.7.5：HUD 武器色塊＝特效顏色 */
 function abBar(){ const el=$('abBar'); if(!el||!G) return; const act=Abil.activeSynergies(G.build);
   const gs=Combat.gunStreams(G.st||Abil.computeStats(G.build,meta));
-  el.innerHTML=`<span class=ab title="槍彈道">🔫<sub>${gs}</sub></span>`+Abil.ABILITIES.filter(a=>G.build[a.id]&&!a.id.startsWith('p_')).map(a=>`<span class=ab>${abIcon(a.id)}<sub>${G.build[a.id]}</sub></span>`).join('')+Object.keys(G.st&&G.st.weapons||{}).map(id=>{const n=Combat.weaponProj(G.st,id); return n?`<span class=ab title="${id}">${VIS_ICON[Abil.WEAPONS[id].vis]}×${n}</span>`:''}).join('')+act.map(s=>`<span class="ab syn" title="${s.name}">★${s.name.slice(0,2)}<sub>${G.build[s.key]}</sub></span>`).join(''); }
+  el.innerHTML=`<span class=ab title="槍彈道">🔫<sub>${gs}</sub></span>`+Abil.ABILITIES.filter(a=>G.build[a.id]&&!a.id.startsWith('p_')).map(a=>`<span class=ab${Abil.WEAPONS[a.id]?` style="${wChip(a.id)}"`:''}>${abIcon(a.id)}<sub>${G.build[a.id]}</sub></span>`).join('')+Object.keys(G.st&&G.st.weapons||{}).map(id=>{const n=Combat.weaponProj(G.st,id); return n?`<span class=ab title="${id}" style="${wChip(id)}">${VIS_ICON[Abil.WEAPONS[id].vis]}×${n}${G.st.evoW&&G.st.evoW[id]?'✦':''}</span>`:''}).join('')+act.map(s=>`<span class="ab syn" title="${s.name}">★${s.name.slice(0,2)}<sub>${G.build[s.key]}</sub></span>`).join(''); }
 // 選卡展示：慢動作 0.5 秒 + 大圖示 + 名稱 + 一行效果，武器立刻施放
 function showcase(a,newSyn){ G.slow=0.5; const el=$('showcase'); el.innerHTML=`<div class=sc-i>${abIcon(a.id)}</div><b>${a.name}${G.build[a.id]>1?' Lv'+G.build[a.id]:''}</b><small>${a.desc}</small>`; el.className='on'; setTimeout(()=>el.className='',1100);
   if(Abil.WEAPONS[a.id]) G.wcd[a.id]=0.01; else { G.aura=1.2; burst(G.z+1,G.x,ELEM_COL[Abil.ELEM_TAG[a.id]]||'#7df9ff',30,1.5,0.8); }
@@ -236,7 +237,7 @@ function dmgZ(u,d,col,gun,st){ if(u.dead) return; if(u.charger){ u.hitT=0.06; if
   d*=sgDmgMul(); if(gun&&u.type==='shield'&&u.z>G.z) d*=0.5; if(gun&&u.type==='armored') d*=0.6; if(u.buffT>0) d*=0.7; // 精英光環減傷
   let crit=false; if(gun&&rnd()<s.crit){ d*=s.critMul; crit=true; }
   if(G.endless) G.dmgW=(G.dmgW||0)+Math.min(d,Math.max(0,u.hp)); u.hp-=d; u.hitT=0.1; if((!gun||!(u.kbCd>G.t))&&!(G.state==='horde'&&(G.hordeT<-15||G.endless))){ /* v0.6.1：無限模式屍潮不擊退，否則高攻速把殭屍釘在射程外、永遠碰不到 */ if(gun) u.kbCd=G.t+0.25; const nz_=u.z+Math.min(0.8,(gun?0.1:0.35)*(st&&st.kb?3:1)*(FX.ETYPES[u.type].hp>=4?0.4:1)), lim_=G.z+CONFIG.gunRange-2; u.z=nz_>lim_?Math.max(u.z,lim_):nz_; } /* v0.6.1：基礎槍擊退每 0.25 秒最多一次，避免高射速把殭屍永久釘住 */ /* v0.6.1 N3：擊退不推出射程 */ // 受擊白閃 + 擊退
-  u.dAcc=(u.dAcc||0)+d; u.dCol=col||'#ffffff'; if(crit) float(Combat.fmt(Math.max(1,d))+'!','#ffd23f',u.z,u.x,true);
+  u.dAcc=(u.dAcc||0)+d; u.dCol=col||'#ffffff'; if(!gun&&col){ u.tc=col; u.tcU=G.t+0.22; } /* v0.7.5：武器命中染色 */ if(crit) float(Combat.fmt(Math.max(1,d))+'!','#ffd23f',u.z,u.x,true);
   if(rnd()<0.3) burst(u.z,u.x,crit?'#ffd23f':'#fff6a0',2,0.5,0.5); if((G.hitS||0)<=0){ SFX.hit(); G.hitS=0.06; }
   if(st&&!G.tipSt){ for(const k of ['burn','poison','stun','freeze','slow']) if(st[k]) tip('s_'+k); if(['burn','poison','stun','freeze','slow'].every(k=>Tips.seen(localStorage,'s_'+k))) G.tipSt=1; }
   if(st){ if(st.burn) u.burn=Math.max(u.burn||0,st.burn); if(st.poison) u.poison=Math.max(u.poison||0,st.poison); if(st.stun) u.stun=Math.max(u.stun||0,st.stun); if(st.freeze) u.frozen=Math.max(u.frozen||0,st.freeze); if(st.slow) u.slow=Math.max(u.slow||0,st.slow); }
@@ -250,7 +251,7 @@ function _killZ(u){ if(u.dead) return; u.dead=1; G.killed+=u.w; if(G.E) G.E.kill
   if(T.gold){ const c=Math.round(25*G.st.coinMul); G.coins+=c; float('🪙+'+c,'#ffd23f',u.z,u.x,true); burst(u.z,u.x,'#ffd23f',30,2); SFX.coin(); } if(G.gems.length<160) G.gems.push({z:u.z,x:u.x,w:u.w}); else gainXp(CONFIG.xpPerGem*u.w); burst(u.z,u.x,'#5fae3a',3,0.8); }
 function castWeapons(dt){ const s=G.st, L=G.lv; if(!s.weapons) return; const W=Abil.WEAPONS;
   for(const id in s.weapons){ const w=W[id], lvl=s.weapons[id]; if(!w||!lvl) continue;
-    G.wcd[id]=(G.wcd[id]||rnd()*w.cd)-dt; if(G.wcd[id]>0) continue; const cd=w.cd/Math.max(0.3,s.cdMul||1); G.wcd[id]=cd; const evo=!!(s.evoW&&s.evoW[id]); const from=muzzle();
+    G.wcd[id]=(G.wcd[id]||rnd()*w.cd)-dt; if(G.wcd[id]>0) continue; const cd=w.cd/Math.max(0.3,s.cdMul||1); G.wcd[id]=cd; const evo=!!(s.evoW&&s.evoW[id]); const from=muzzle(); const WC=FX.wcol(id); /* v0.7.5：每把武器專屬色（特效、傷害數字、HUD 共用） */
     const nProj=Combat.weaponProj(s,id); const dmg0=Combat.HP0()*w.k*(0.6+0.4*lvl)*(1+(s.wElem[w.elem]||0))*(s.wMul[id]||1)*(1+s.area)*0.35;
     const areaR={fireball:[0.35,5],meteor:[0.7,8],poison:[0.5,6],blackhole:[0.9,10],shock:[1.1,12],holy:[0.25,4],tornado:[0.35,14],ice:[0.3,4]}[w.vis];
     // 發射 nProj 發；AOE 落地才 inRadius 扣血；彈道類走真實碰撞
@@ -258,21 +259,21 @@ function castWeapons(dt){ const s=G.st, L=G.lv; if(!s.weapons) return; const W=A
       const off=(nProj>1?(pi/(nProj-1)-0.5):0)*0.25;
       if(G.state==='horde'||(G.state==='run'&&G.units.some(u=>!u.dead&&u.z<G.z+60))||G.state==='boss'){
         const near=zombiesNear(40); const aim=G.state==='boss'?{x:(rnd()-0.5)*0.4,z:L.boss.z}: (near[Math.min(near.length-1,pi)]||{x:G.x+off,z:G.z+20});
-        if(areaR){ const c=w.vis==='shock'?{x:G.x,z:G.z+4}:{x:aim.x+off,z:aim.z}; const tg=[{x:c.x,z:c.z}];
+        if(areaR){ const c=w.vis==='shock'?{x:G.x,z:G.z+4}:{x:aim.x+off,z:aim.z}; const tg=[{x:c.x,z:c.z}]; if(w.vis==='blackhole') FX.inRadius(G.units,c.x,c.z,areaR[0]*(evo?1.35:1)*(1+s.area),areaR[1]*(evo?1.35:1)).slice(0,30).forEach(u=>tg.push({x:u.x,z:u.z,ref:u})); /* v0.7.5：黑洞把範圍內的殭屍往中心吸（只吸本來就會被打到的） */
           FX.cast(w.vis,from,tg,()=>{ const zs=FX.inRadius(G.units,c.x,c.z,areaR[0]*(evo?1.35:1)*(1+s.area),areaR[1]*(evo?1.35:1));
-            zs.forEach(u=>dmgZ(u,dmg0,ELEM_COL[w.elem],0,WST[w.vis])); if(G.B&&Math.abs((G.B.bx||0)-c.x)<areaR[0]+0.55&&Math.abs(L.boss.z-c.z)<areaR[1]) hitBoss(dmg0,c.x);
+            zs.forEach(u=>dmgZ(u,dmg0,WC,0,WST[w.vis])); if(G.B&&Math.abs((G.B.bx||0)-c.x)<areaR[0]+0.55&&Math.abs(L.boss.z-c.z)<areaR[1]) hitBoss(dmg0,c.x);
             /* v0.6：不再把總傷害顯示在範圍中心；每隻被打到的怪在自己的位置顯示（dAcc 合併） */
             if(w.vis==='meteor'||w.vis==='shock') shake(8); },{evo,lvl}); }
         else if(w.vis==='lightning'){ const chain=1+(s.chain|0); let cur=near[0]; const tg=cur?[cur]:[{x:aim.x,z:aim.z}];
           if(cur){ cur._tg=1; for(let j=1;j<chain+nProj;j++){ let b=null,bd=1e9; for(const u of near) if(!u._tg){ const d=Math.abs(u.x-cur.x)*10+Math.abs(u.z-cur.z); if(d<bd){bd=d;b=u;} } if(!b) break; b._tg=1; tg.push(b); cur=b; } near.forEach(u=>u._tg=0); }
-          FX.cast(w.vis,from,tg.map(u=>({x:u.x,z:u.z})),()=>{ tg.forEach(u=>{ if(u.hp!==undefined) dmgZ(u,dmg0,ELEM_COL.thunder,0,WST.lightning); }); },{evo,lvl}); }
-        else if(w.vis==='laser'){ const x0=G.x+off; FX.cast(w.vis,{x:x0,z:from.z},[{x:x0,z:G.z+40}],()=>{ FX.inRadius(G.units,x0,G.z+20,0.22*(1+s.area),40).forEach(u=>dmgZ(u,dmg0,ELEM_COL.thunder,0,WST.laser)); if(G.B&&Math.abs((G.B.bx||0)-x0)<0.3) hitBoss(dmg0); },{evo,lvl}); }
+          FX.cast(w.vis,from,tg.map(u=>({x:u.x,z:u.z})),()=>{ tg.forEach(u=>{ if(u.hp!==undefined) dmgZ(u,dmg0,WC,0,WST.lightning); }); },{evo,lvl}); }
+        else if(w.vis==='laser'){ const x0=G.x+off; FX.cast(w.vis,{x:x0,z:from.z},[{x:x0,z:G.z+40}],()=>{ FX.inRadius(G.units,x0,G.z+20,0.22*(1+s.area),40).forEach(u=>dmgZ(u,dmg0,WC,0,WST.laser)); if(G.B&&Math.abs((G.B.bx||0)-x0)<0.3) hitBoss(dmg0); },{evo,lvl}); }
         else { // 彈道武器：真實飛行碰撞
           const spd={missile:50,arcane:55,boomerang:60,ice:70,fireball:55}[w.vis]||65;
           const rad={missile:0.12,arcane:0.12,boomerang:0.10,ice:0.12}[w.vis]||CONFIG.hit.proj;
           const tx=aim.x+off+(rnd()-0.5)*0.1, tz=aim.z+rnd()*2;
           const hom=w.vis==='missile'||w.vis==='arcane'?()=>{ const t=zombiesNear(1)[0]; return t?{x:t.x,z:t.z}:(G.B?{x:0,z:L.boss.z}:null); }:null;
-          FX.bullet(from.x+off*0.2,from.z,tx,tz,ELEM_COL[w.elem]||'#fff',spd,null,0.3,{dmg:dmg0,pierce:w.vis==='boomerang'?3:0,radius:rad,kind:w.vis,st:WST[w.vis],homing:hom,life:1.1}); }
+          const o_=w.vis==='saw'?FX.sawPos(G,G.t,2+lvl,pi%(2+lvl)):{x:from.x+off*0.2,z:from.z}; /* 鋸刃從環繞的刃位置甩出 */ FX.bullet(o_.x,o_.z,tx,tz,WC,spd,null,0.3,{evo,lv:lvl,dmg:dmg0,pierce:w.vis==='boomerang'?3:0,radius:rad,kind:w.vis,st:WST[w.vis],homing:hom,life:1.1}); }
       } else if(G.state==='run'){ const e=L.enemies.find(e=>e.count>0&&e.z-G.z<45&&e.z>G.z+3); if(!e){ G.wcd[id]=0.15; break; }
         FX.cast(w.vis,from,[{x:e.x+off,z:e.z}],()=>{ e.count=Math.max(0,e.count-dmg0*0.08); e.hitT=0.1; },{evo,lvl}); }
     } } }
@@ -287,7 +288,7 @@ function ultTick(dt){ const s=G.st; if(!s.ult) return; for(const k in s.ult){ co
     G.ultT[k]=(G.ultT[k]===undefined?3:G.ultT[k])-dt; if(G.ultT[k]>0) continue; const alive=G.units.filter(u=>!u.dead&&u.z<G.z+70);
     if(!alive.length&&!(G.state==='boss')&&!G.lv.enemies.some(e=>e.count>0&&e.z-G.z<45)){ G.ultT[k]=0.5; continue; }
     G.ultT[k]=U.cd*(1-0.08*(lv-1)); const dmg=(G.unitW||1)*Combat.HP0()*Combat.tierM(G.lv.tier)*(1.6+0.6*lv); if(G.B) hitBoss(G.B.max*0.04*lv); // 全螢幕：畫面上所有敵人＋Boss
-    banner('🌟 終極：'+U.name+(lv>1?' Lv'+lv:'')+'！',U.col,2); FX.screenFlash(U.col,0.55); shake(30); SFX.elem(U.sfx); setTimeout(()=>SFX.elem(U.sfx),120); SFX.slam();
+    banner('🌟 終極：'+U.name+(lv>1?' Lv'+lv:'')+'！',U.col,2); FX.ult(k); /* v0.7.5：全螢幕大招覆蓋 */ FX.screenFlash(U.col,0.55); shake(30); SFX.elem(U.sfx); setTimeout(()=>SFX.elem(U.sfx),120); SFX.slam();
     const pts=[]; for(let i=0;i<14;i++) pts.push({x:-1.1+2.2*(i%7)/6+(rnd()-0.5)*0.2,z:G.z+6+Math.floor(i/7)*14+rnd()*10});
     if(k==='singularity'){ const c={x:0,z:G.z+16}; alive.forEach(u=>{ u.stun=1.6; u.pull=c; }); FX.cast('blackhole',c,[c,...alive.slice(0,60).map(u=>({x:u.x,z:u.z,ref:u}))],()=>{ G.units.forEach(u=>{ if(!u.dead&&u.z<G.z+70) dmgZ(u,dmg*1.2,U.col,0,U.st); }); FX.screenFlash('#ffffff',0.5); shake(30); },{evo:1,lvl:lv+3}); }
     else { pts.forEach((pt,i)=>setTimeout(()=>{ if(!G||G.state==='over') return; FX.cast(U.vis,{x:pt.x,z:k==='meteor'?pt.z:G.z+1},[pt],null,{evo:1,lvl:lv+2}); },i*40));
@@ -308,7 +309,7 @@ function applyBulletHit(target,b,dmg){
   if(target.isGate){ const g=target.g; if(g.shoot<CONFIG.shootGateMax){ g.shoot++; g.flash=0.15; } if(g.shoot>=CONFIG.shootGateMax) target.dead=1; return; }
   if(target===G.lv.boss||(G.B&&target===G.B)||target.isBoss){ hitBoss(dmg,b.x); if((G.hitS||0)<=0){ SFX.hit(); G.hitS=0.05; } burst(G.lv.boss.z,(rnd()-0.5)*0.3,'#ffd23f',3,0.8,1); return; }
   let crit=false; let d=dmg; if(b.kind==='gun'&&rnd()<G.st.crit){ d*=G.st.critMul; crit=true; }
-  dmgZ(target,d,null,b.kind==='gun'?1:0,b.st); if(crit) float(Combat.fmt(d)+'!','#ffd23f',target.z,target.x,true); }
+  dmgZ(target,d,b.kind==='gun'?null:b.col,b.kind==='gun'?1:0,b.st); if(crit) float(Combat.fmt(d)+'!','#ffd23f',target.z,target.x,true); }
 // 本幀可被子彈打中的目標（殭屍＋跑道怪物群＋寶箱＋可射擊閘門），Boss 另算
 function hitTargets(){ const L=G.lv, list=G.units.slice();
   for(const e of L.enemies) if(e.count>0&&!e.passed&&e.z>G.z&&e.z-G.z<CONFIG.gunRange+4){ e.isMob=1; e.hitR=0.32; e.dead=0; list.push(e); }
@@ -555,7 +556,7 @@ function cardInner(a){ const RN={C:'普通',R:'稀有',E:'史詩',L:'傳說',SP:
       return `<b>✦ 進化：${a.name}</b><span class=tag>${RN.EVO}</span><small>${b.name}(MAX) + ${p.name} → ${a.desc}</small>`; }
     else { const nb=Object.assign({},G.build,{[a.id]:(G.build[a.id]||0)+1}); const newSyn=Abil.activeSynergies(nb).filter(s=>!Abil.activeSynergies(G.build).includes(s)); const newUnl=a.special?[]:Abil.unlockedSynergies(nb).filter(s=>!Abil.unlockedSynergies(G.build).includes(s));
       const lv=(G.build[a.id]||0)+1, ev=Abil.EVOLUTIONS.find(e=>e.base===a.id);
-      return `${abPreview(a)}<b>${a.name}</b><span class=tag>${RN[a.rar]}</span>${elemTags(a.id)}${G.build[a.id]?`<span class=tag>Lv${lv}${lv>=a.max?' MAX':''}</span>`:''}<small>${a.desc}</small>${abNumbers(a,lv)}${newUnl.map(s=>`<small class=syn>🔓 解鎖特殊能力「${s.name}」（之後會出現在選項中）</small>`).join('')}${newSyn.map(s=>`<small class=syn>★ 觸發組合技「${s.name}」：${s.desc}</small>`).join('')}${ev?`<small class=evo>✦ 滿級 + ${Abil.ABILITIES.find(x=>x.id===ev.partner).name} 可進化為「${ev.name}」</small>`:''}`; }
+      return `${abPreview(a)}<b>${a.name}</b><span class=tag>${RN[a.rar]}</span>${elemTags(a.id)}${G.build[a.id]?`<span class=tag>Lv${lv}${lv>=a.max?' MAX':''}</span>`:''}<small>${a.desc}</small>${a.needs?`<small class=needs>強化：${a.needs.filter(w=>G.build[w]>0).map(w=>(Abil.ABILITIES.find(x=>x.id===w)||{name:w}).name).join('、')}</small>`:''}${abNumbers(a,lv)}${newUnl.map(s=>`<small class=syn>🔓 解鎖特殊能力「${s.name}」（之後會出現在選項中）</small>`).join('')}${newSyn.map(s=>`<small class=syn>★ 觸發組合技「${s.name}」：${s.desc}</small>`).join('')}${ev?`<small class=evo>✦ 滿級 + ${Abil.ABILITIES.find(x=>x.id===ev.partner).name} 可進化為「${ev.name}」</small>`:''}`; }
 }
 function showChoice(title){ /* v0.4：選卡亂數不再每關固定（關卡內容仍固定） */ const r=RNG.mulberry32(RNG.hash((G.runSeed=G.runSeed||((Date.now()^Math.floor(Math.random()*1e9))>>>0)),G.level*131+(G.pickN++)*7)); G.pity=G.pity||{}; const ch=Abil.rollChoices(G.build,r,G.pity);
   $('cTitle').textContent=(title||'')+' 選擇一項能力';
@@ -699,7 +700,7 @@ function draw(){
   const th=G&&G.th?G.th:THEME.grass;
   if(G&&G.shake>0.5) ctx.translate((rnd()-0.5)*G.shake*D,(rnd()-0.5)*G.shake*D); if(G&&G.bd){ const sh=G.bd.fx.shake(W/960); ctx.translate(sh.x,sh.y); }
   drawBg(th); if(!G||!G.lv) return; const L=G.lv;
-  drawTrack(th);
+  drawTrack(th); FX.drawDecals(); /* v0.7.5：武器地面印記（焦痕/霜地/隕石坑…）畫在殭屍底下 */
   const items=[];
   for(let z=Math.floor(G.z/12)*12;z<G.z+130;z+=12){ [-1.6,1.6,-2.3,2.4].forEach((x,i)=>{ if((z/12+i)%3!==0) items.push({z:z+i*3,f:()=>deco(th,z+i*3,x)}); }); }
   const vis=z=>z-G.z<130&&z>G.z-1;

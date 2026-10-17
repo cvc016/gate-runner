@@ -9,14 +9,16 @@ function sections(level){ const s=((level-1)%10)+1; return Math.min(8, 2+Math.fl
 function build(seed, level, lanes, Abil){ Abil=Abil||root.Abil||require('./abilities.js'); const n=sections(level), segs=[]; let entry=Stage.startArmy(level,0);
   const s0=Abil.baseStats({}); let wo=0;
   const xc=xCount(seed,level), xq=new Array(n).fill(0); { const rq=RNG.mulberry32(RNG.hash(seed,level*71+5)); for(let k=0;k<xc;k++) xq[Math.floor(rq()*n)]++; } // v0.7.3：乘法門整關數量（0–上限）隨機分到各段
-  for(let j=0;j<n;j++){ const kind=j===n-1?'boss':'mini'; const L=Combat.prepareStage(Stage,Abil,RNG.hash(seed,level*16+j),level,lanes,{kind,entry:j?entry:0,waveOffset:wo,sections:n,xQuota:xq[j],lastSeg:j===n-1}); wo+=L.hordes.length; L.waveOffset=wo-L.hordes.length;
+  for(let j=0;j<n;j++){ const kind=j===n-1?'boss':'mini'; const L=Combat.prepareStage(Stage,Abil,RNG.hash(seed,level*16+j),level,lanes,{kind,entry:j?entry:0,waveOffset:wo,sections:n,xQuota:xq[j],xVal:xVal(seed,level),lastSeg:j===n-1}); L.prepOpt={kind,entry:j?entry:0,waveOffset:wo,sections:n,xQuota:xq[j],xVal:xVal(seed,level),lastSeg:j===n-1}; wo+=L.hordes.length; L.waveOffset=wo-L.hordes.length;
     { const DS=(root.DESIGN||(typeof require!=='undefined'?require('./design-data.js'):null)); if(DS){ const pool=DS.bosses.filter(b=>b.fromStage<=level&&(kind==='boss'||/mini/.test(b.role))); const r=RNG.mulberry32(RNG.hash(seed,level*97+j)); const bb=pool[Math.floor(r()*pool.length)]||DS.bosses[0]; L.boss.name=bb.name; L.boss.key=bb.key; L.boss.skill=bb.skills[0]; L.boss.vi=DS.bosses.indexOf(bb); } }
     L.seg=j; L.segs=n; L.level=level; L.entry=j?entry:0; L.lanes=lanes||2; L.segSeed=RNG.hash(seed,level*16+j); segs.push(L);
     entry=Math.max(Stage.startArmy(level,0), Math.round(L.boss.calibA*CONFIG.bossEntryCarry)); } // v0.6：下一段入場兵力 = 本段預期兵力 × 0.55
   { const SP=root.Special||(typeof require!=='undefined'?require('./special.js'):null); if(SP&&!root.__noStone) SP.place(segs,level,seed); } // v0.7：石頭門（第 11 關起）
   return segs; }
-function xCap(level){ return level>100?2:1; } // v0.7.3：每關乘法門上限 L1–100 1 個、L101+ 2 個（約減半）
-function xCount(seed,level){ const M=CONFIG.v7.mulGate; if(level===1) return 1; const r=RNG.mulberry32(RNG.hash(seed,level*71+3))(); if(level<=100) return r<M.pOne?1:0; return r<M.pTwo?2:(r<M.pTwo+M.pOneLate?1:0); } // L1 固定 1 個（教學）；L2–100 約 70% 有 1 個；L101+ 平均約 0.95 個
+function xCap(level){ return xAllowed(level)?1:0; } // v0.7.4：L1–10 沒有乘法門；之後每 3 關最多 1 個（L 為 3 的倍數），Boss 關（每 10 關）不出現
+function xAllowed(level){ const M=CONFIG.v7.mulGate; return level>M.noneUpTo && level%M.every===0 && ((level-1)%CONFIG.cycleLength)+1!==CONFIG.cycleLength; }
+function xCount(seed,level){ return xAllowed(level)?1:0; }
+function xVal(seed,level){ const M=CONFIG.v7.mulGate; if(level<M.x3From) return 2; return RNG.mulberry32(RNG.hash(seed,level*71+9))()<M.p3?3:2; } // ×2；L100 起 ×3 也可能
 // 星等：0 次復活 = 3 星；1 次 = 2 星；更多 = 1 星
 function stars(revivesUsed){ return revivesUsed<=0?3:revivesUsed===1?2:1; }
 // 進度：通關第 L 關解鎖 L+1；記錄最佳星等與最佳剩餘兵力
@@ -25,6 +27,6 @@ function recordClear(meta, level, starsGot, army){ meta.unlocked=Math.max(meta.u
 function isUnlocked(meta, level){ return level>=1 && level<=Math.max(1,meta.unlocked||1); }
 // 關內保底選卡次數：開局 2 + 每段殭屍潮 2 + 每個中 Boss 3（另有經驗升級的額外選卡，未計入）
 function picks(level){ const n=sections(level); return 2+2*n+3*(n-1); }
-const Level={MAX,xCap,xCount,sections,picks,build,stars,recordClear,isUnlocked};
+const Level={MAX,xCap,xCount,xAllowed,xVal,sections,picks,build,stars,recordClear,isUnlocked};
 if (typeof module!=='undefined') module.exports=Level; else root.Level=Level;
 })(this);

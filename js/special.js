@@ -39,12 +39,12 @@ function taps(L){ const g=SG(); if(L<g.from) return 0; if(L<21) return L<16?2:3;
 // 每關石頭門數（全關合計）
 function count(L,r){ const g=SG(), s=info(L).s; if(L<g.from) return 0; if(L<=30) return 1; if(L<=60) return s>=6?2:1; if(s===10) return g.bossLevelMax; if(L<=150) return 2; if(L<=400) return 2+(r()<0.5?1:0); return 3; }
 function pGood(L){ const t=SG().pGood; let p=t[0][1]; for(const [l,v] of t) if(L>=l) p=v; if(info(L).s===5) p+=SG().restBonus; return Math.min(1,p); }
-function unlocked(L){ return LIST.filter(d=>from(d.k)<=L); }
+function unlocked(L){ return LIST.filter(d=>from(d.k)<=L&&!(SG().disabled||[]).includes(d.k)); } // v0.7.4：雙倍門（×2）停用
 function pick(L,r){ const un=unlocked(L); const goods=un.filter(d=>d.good), bads=un.filter(d=>!d.good); const nb=SG().newBoost;
   const pool=(bads.length&&r()>=pGood(L))?bads:goods; const ws=pool.map(d=>d.w*(L-from(d.k)<nb.levels?nb.mul:1)); let t=ws.reduce((a,b)=>a+b,0), x=r()*t;
   for(let i=0;i<pool.length;i++){ x-=ws[i]; if(x<=0) return pool[i].k; } return pool[pool.length-1].k; }
 // 放到關卡：只放在閘門排（非移動／變換、沒有乘法門、沒有射擊門），每段前兩排不放；第 11 關固定第 1 段第 1 個可放的排（教學）
-function place(segs,L,seed){ const n0=count(L,RNG.mulberry32(RNG.hash(seed,L*53+1))); if(!n0) return 0; const r=RNG.mulberry32(RNG.hash(seed,L*53+2)); const cand=[];
+function place(segs,L,seed,nOverride){ const n0=nOverride!=null?nOverride:count(L,RNG.mulberry32(RNG.hash(seed,L*53+1))); if(!n0) return 0; const r=RNG.mulberry32(RNG.hash(seed,L*53+2)); const cand=[];
   segs.forEach((sg,j)=>sg.rows.forEach((row,i)=>{ if(i<2||row.timed||row.gates.some(g=>g.op==='x')||row.gates.length<2) return; cand.push({j,i,row}); }));
   let placed=0; const used=new Set(); const g=SG(); const hardOk=L>=g.hardFrom;
   for(let k=0,tries=0;placed<n0&&cand.length&&tries<n0*6;tries++,k=placed){ let c; if(L===g.from&&k===0) c=cand.find(x=>x.j===0)||cand[0]; else { const left=cand.filter(x=>!used.has(x.j+':'+x.i)&&!used.has('seg'+x.j)); c=left.length?left[Math.floor(r()*left.length)]:null; } if(!c) break;

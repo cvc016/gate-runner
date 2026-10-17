@@ -169,11 +169,15 @@ function weightOf(a, build){ let w=W[a.rar]*((build[a.id]||0)>0?2:1); /* 已擁�
   /* 方案 F：已擁有但還沒到某組合技門檻、另一件已擁有 → x3 */ if(build[a.id]>0&&SYNERGIES.some(s=>s.req.includes(a.id)&&build[a.id]<s.need[a.id]&&s.req.some(q=>q!==a.id&&build[q]>0))) w*=3; return w; }
 // 三選一：從整個候選池加權隨機抽（新能力、已擁有能力升級、已解鎖特殊能力、進化分支），不強制塞卡
 const WX={SP:250,EVO:250}; // 已解鎖特殊能力、進化分支較常出現（但不保證）
-function candidatePool(build){ const pool=ABILITIES.filter(a=>(build[a.id]||0)<a.max&&!(a.id.startsWith('p_')&&!(build[a.id.slice(2)]>0))).map(a=>({a,w:weightOf(a,build)*(a.id.startsWith('p_')||a.id==='gunStream'||a.id==='twinGun'?0.9:1)}));
+// v0.7.4：武器專屬被動卡要先有對應武器才會出現（any-of）；通用卡不受限
+const NEEDS={lens:['laser'],wingman:['missiles'],sharpen:['boomerang','orbitSaw'],gravity:['blackHoleW','shockwave'],blessing:['holyLight'],conductor:['chainLightning','laser'],burn:['fireball','meteorW'],frostbite:['iceShard'],arcaneFocus:['arcaneOrb','blackHoleW'],toxin:['poisonCloud','tornado']};
+ABILITIES.forEach(a=>{ if(NEEDS[a.id]) a.needs=NEEDS[a.id]; else if(a.id.startsWith('p_')) a.needs=[a.id.slice(2)]; });
+function needsMet(a,build){ return !a.needs||a.needs.some(w=>(build[w]||0)>0); }
+function candidatePool(build){ const pool=ABILITIES.filter(a=>(build[a.id]||0)<a.max&&needsMet(a,build)).map(a=>({a,w:weightOf(a,build)*(a.id.startsWith('p_')||a.id==='gunStream'||a.id==='twinGun'?0.9:1)}));
   for(const s of unlockedSynergies(build)) if((build[s.key]||0)<s.max) pool.push({a:specialCard(s,build),w:WX.SP});
   for(const e of availableEvolutions(build)) pool.push({a:e,w:WX.EVO}); return pool; }
 // 「有用的卡」：已解鎖的特殊卡，或某組合技還缺、且另一件已擁有的需求卡
-function usefulCard(a,build){ return !!a.special || SYNERGIES.some(s=>s.req.includes(a.id)&&(build[a.id]||0)<s.need[a.id]&&s.req.some(q=>q!==a.id&&build[q]>0)); }
+function usefulCard(a,build){ if(!needsMet(a,build)) return false; return !!a.special || SYNERGIES.some(s=>s.req.includes(a.id)&&(build[a.id]||0)<s.need[a.id]&&s.req.some(q=>q!==a.id&&build[q]>0)); }
 // 保底：連續 2 次三選一都沒有有用的卡 → 下一次強制塞 1 張（state.miss 由呼叫端保存）
 function rollChoices(build, r, state){ const out=rollRaw(build,r); if(!state) return out;
   if(out.some(a=>usefulCard(a,build))){ state.miss=0; return out; }
@@ -182,6 +186,6 @@ function rollChoices(build, r, state){ const out=rollRaw(build,r); if(!state) re
 function rollRaw(build, r){ const pool=candidatePool(build); const out=[];
   while(out.length<3&&pool.length){ let t=pool.reduce((x,y)=>x+y.w,0), p=r()*t, k=0; for(;k<pool.length;k++){p-=pool[k].w; if(p<=0)break;} out.push(pool.splice(Math.min(k,pool.length-1),1)[0].a); }
   return out; }
-const Abil={usefulCard,synUnlocked,unlockedSynergies,unlockHint,specialCard,candidatePool,WEAPONS,ABILITIES,SYNERGIES,EVOLUTIONS,ELEM_TAG,ELEM_NAME,RESONANCE,computeStats,activeSynergies,availableEvolutions,rollChoices,baseStats};
+const Abil={needsMet,NEEDS,usefulCard,synUnlocked,unlockedSynergies,unlockHint,specialCard,candidatePool,WEAPONS,ABILITIES,SYNERGIES,EVOLUTIONS,ELEM_TAG,ELEM_NAME,RESONANCE,computeStats,activeSynergies,availableEvolutions,rollChoices,baseStats};
 if (typeof module!=='undefined') module.exports=Abil; else root.Abil=Abil;
 })(this);
