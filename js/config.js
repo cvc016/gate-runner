@@ -132,11 +132,12 @@ const CONFIG = {
     restPos5: 0.85, enemyWallExp: 0.5,
     zombieHpMul: 1.3, bossHpMul: 1.4, bossHpMulEarly: [1.2,1.2,1.2],
     firstHordeAdd: 10, lastHordeMin: 50, lastWaveDur: 12, lastWaveHpEarly: [0.6,0.7,0.8],
-    hard: { bands: [ // v0.7.4 第 2 輪：亂選門（隨機門＋隨機卡）目標 L1–3 60–70%、L4–5 40–50%、L6+ 20–30%；聰明選門照樣可過
+    hard: { bands: [ // v0.7.5 r3（v0.7.4 第 2 輪起）：亂選門（隨機門＋隨機卡）目標 L1–3 60–70%、L4–5 40–50%、L6+ 20–30%；聰明選門照樣可過
       { to:3, bad:0.3, div3:0, div2:0.35, minus:[8,25], hp:1.15 },
-      { to:5, bad:0.5, div3:0.15, div2:0.4, minus:[15,40], hp:1.25 },
+      { to:5, bad:0.6, div3:0.25, div2:0.45, minus:[20,50], hp:1.45 }, // r3：L5 亂選 6/6 → 更難
       { to:10, bad:0.55, div3:0.15, div2:0.5, minus:[15,45], hp:1 },
-      { to:1e9, bad:0.45, div3:0.08, div2:0.45, minus:[10,35], hp:0.9 } ] },
+      { to:30, bad:0.4, div3:0.05, div2:0.45, minus:[10,30], hp:0.85 }, // r3：L20 亂選 0/6 → 稍鬆
+      { to:1e9, bad:0.5, div3:0.12, div2:0.5, minus:[15,40], hp:1.0 } ] }, // r3：L50 亂選 3/6、挑好門 5/6 → 更難
     hpMul073: 1.1, hpMul073Early: [1.05,1.05,1.05], zombieSpeedMul: 1.12, // v0.7.3：一般殭屍／Boss HP ×1.1（L1–3 ×1.05、含無盡）；基礎走速 ×1.12（各怪種相對比例不變）
     mulGate: { noneUpTo:10, every:3, x3From:100, p3:0.5, endlessOne:0.5, value: 2, pOne: 0.7, pTwo: 0.25, pOneLate: 0.45, endlessTwo: 0.4 }, plusGate: [9, 33], // v0.7.3：乘法門約減半（只有 ×2），+ 門 8–30 → 9–33 小幅補償
     fx:{ atk:0.12, rate:0.08, armor:0.975, start:4, gate:0.08, boss:0.10, crit:0.03 }, gateExp:0.7, gateX:2.2, // v0.7.1：升級效果加倍＋HP 掛鉤建議配點輸出（QA：v0.7.0 建議配點全勝、不升級 L50 仍 50%）
